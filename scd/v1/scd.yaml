@@ -1,10 +1,10 @@
 openapi: 3.0.2
 info:
   title: Strategic Coordination Test Data Injection
-  version: 0.0.1
+  version: 0.1.0
   description: >-
-    This interface is implemented by every USS wishing to be tested by the automated testing framework.
-    The automated testing suite calls this interface to inject test data into the USS system under test.
+    This interface is implemented by every USS wishing to enable the automated testing framework to interact with the
+    USS as a user planning flights.  This interaction capability is required by some automated tests.
 
 components:
   securitySchemes:
@@ -433,21 +433,24 @@ components:
       properties:
         result:
           description: >-
-            The result of the flight submission
+            The result of the flight submission.
+            If any option other than `Planned` or `ReadyToFly` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
 
               - `Planned`: The flight submission data was valid and the flight was successfully processed by the USS and is now authorized.
 
               - `ReadyToFly`: The flight is ready for the operator to begin flying.
 
-              - `Rejected`: The flight submission data provided was invalid and/or could not be used to attempt to authorize the flight.
+              - `Rejected`: The flight submission data provided was invalid and/or could not be used to attempt to authorize the flight.  The reason for rejection may include a disallowed conflict with another flight.
 
-              - `ConflictWithFlight`: The flight submission data was valid, but the flight could not be authorized because of a disallowed conflict with another flight.
+              - `ConflictWithFlight`: (deprecated; use Rejected instead) The flight submission data was valid, but the flight could not be authorized because of a disallowed conflict with another flight.
 
               - `Failed`: The USS was not able to successfully authorize the flight due to a problem with the USS or a downstream system
+            
+              - `NotSupported`: The USS does not support the attempted interaction.  For instance, if the request specified a high-priority flight and the USS does not support management of high-priority flights.
 
           type: string
-          enum: [Planned, ReadyToFly, Rejected, ConflictWithFlight, Failed]
-          example: ConflictWithFlight
+          enum: [Planned, ReadyToFly, Rejected, ConflictWithFlight, Failed, NotSupported]
+          example: Planned
         notes:
           description: >-
             Human-readable explanation of the observed result.  This explanation
