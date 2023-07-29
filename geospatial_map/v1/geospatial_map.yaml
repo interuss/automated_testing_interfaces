@@ -63,11 +63,21 @@ components:
           type: string
           enum: [Starting, Ready]
           example: Ready
-        version:
+        system_version:
           description: |-
             Arbitrary string representing the version of the USS system to be tested.
           type: string
           example: v0.0.1-445ad3
+        api_name:
+          description: |-
+            Indication of the API implemented at this URL.  Must be "Geospatial Map Provider Automated Testing Interface".
+          type: string
+          example: Geospatial Map Provider Automated Testing Interface
+        api_version:
+          description: |-
+            Indication of the API version implemented at this URL.  Must be "v0.1.0" when implementing this version of the API.
+          type: string
+          example: v0.1.0
 
     CreateGeospatialDataSourceRequest:
       type: object
@@ -122,38 +132,6 @@ components:
           example: |-
             Unable to download the dataset https://caa.example.com/geozones.json. Connection refused.
 
-    #######################################################################
-    #################### Start of ED-269 definitions    ###################
-    #######################################################################
-
-    UomDimensions:
-      type: string
-      enum:
-        - M
-        - FT
-
-    VerticalReferenceType:
-      type: string
-      enum:
-        - AGL
-        - AMSL
-
-    USpaceClass:
-      type: string
-      maxLength: 100
-
-    Restriction:
-      type: string
-      enum:
-        - PROHIBITED
-        - REQ_AUTHORISATION
-        - CONDITIONAL
-        - NO_RESTRICTION
-
-    #######################################################################
-    #################### END of ED-269 definitions    #####################
-    #######################################################################
-
     Position:
       type: object
       required:
@@ -161,9 +139,9 @@ components:
         - verticalReferenceType
       properties:
         uomDimensions:
-          $ref: '#/components/schemas/UomDimensions'
+          $ref: './ed269.yaml#/components/schemas/UomDimensions'
         verticalReferenceType:
-          $ref: '#/components/schemas/VerticalReferenceType'
+          $ref: './ed269.yaml#/components/schemas/VerticalReferenceType'
         height:
           description: >-
             Height above vertical reference datum indicated in `verticalReferenceType`, in units of `uomDimensions`.
@@ -212,6 +190,13 @@ components:
             If specified, only select geospatial features encompassing this position.
           anyOf:
             - $ref: '#/components/schemas/Position'
+        volumes4d:
+          description: >-
+            If specified, only select geospatial features at least partially intersecting one or more of these volumes.
+          type:
+            array
+          items:
+            $ref: './astm_f3548_21.yaml#/components/schemas/Volume4D'
         after:
           description: >-
             If specified, only select geospatial features which encompass at least some times at or after this time.
@@ -222,6 +207,38 @@ components:
             If specified, only select geospatial features which encompass at least some times at or before this time.
           type: string
           format: date-time
+        restriction_source:
+          description: >-
+            If specified, only select geospatial features originating from the named source.  The acceptable values for
+            this field will be established by the test designers and will generally be used to limit responses to only
+            the intended datasets under test even when the USS may have more additional geospatial features from other
+            sources that may otherwise be relevant.
+          type: string
+          example: FAA_LAANC
+        operation_rule_set:
+          description: >-
+            If specified, only select geospatial features that would be relevant when planning an operation under the
+            specified rule set.  The acceptable values for this field will be established by the test designers and will
+            generally correspond to sets of rules under which the system under test plans operations.
+          type: string
+          example: Part107
+        resulting_operational_impact:
+          description: >-
+            If specified, only select geospatial features that would cause the specified outcome if a user attempted to
+            plan a flight applicable to all the other criteria in this filter set.
+            
+            'Block': The geospatial feature would cause rejection of that flight (the USS would decline to plan the
+              flight).
+            
+            'Advise': The geospatial feature would cause the USS to accompany a successful flight plan (if the flight
+              was successfully planned) with an advisory or condition provided to the operator.
+            
+            'BlockOrAdvise': The geospatial feature would cause one of 'Block' or 'Advise' to be be true.
+          type: string
+          enum:
+            - Block
+            - Advise
+            - BlockOrAdvise
         ed269:
           $ref: '#/components/schemas/ED269Filters'
 
@@ -234,13 +251,13 @@ components:
           description: >-
             If specified, only select Geozones which are of the specified `uSpaceClass`.
           anyOf:
-            - $ref: '#/components/schemas/USpaceClass'
+            - $ref: './ed269.yaml#/components/schemas/USpaceClass'
         acceptableRestrictions:
           description: >-
             If specified and non-empty, only select Geozones which are one of the specified restriction types.
           type: array
           items:
-            $ref: '#/components/schemas/Restriction'
+            $ref: './ed269.yaml#/components/schemas/Restriction'
 
     GeospatialMapQueryReply:
       type: object
