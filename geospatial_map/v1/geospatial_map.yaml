@@ -101,12 +101,18 @@ components:
           enum: [ED-269]
           example: ED-269
 
-    GeospatialDataSourceResponse:
+    GeospatialDataSourceStatus:
       type: object
       required:
-        - result
+        - id
+        - status
       properties:
-        result:
+        id:
+          description: >-
+            ID of this geospatial data source
+          anyOf:
+            - $ref: '#/components/schemas/UUIDv4Format'
+        status:
           description: >-
             The status of the Geospatial source and the handling of its data by the USS.
 
@@ -118,11 +124,11 @@ components:
             
             - `Deactivated`: the geospatial dataset has been deactivated (the USS may instead return 404 as well).
 
-            - `Unsupported`: the USS cannot process the dataset type specified.
+            - `Unsupported`: the USS cannot process the dataset type specified, or some valid feature within the dataset. The message field is required in this case.
 
-            - `Rejected`: the geospatial data source was rejected because it is invalid.
+            - `Rejected`: the geospatial data source was rejected because it failed content validation or was otherwise unsuitable to use. The message field is required in this case.
 
-            - `Error`: the geospatial data activation or deactivation failed. The message field is required in this case.
+            - `Error`: the geospatial data activation or deactivation failed for a reason not covered by one of the previous options. The message field is required in this case.
           type: string
           enum: [Activating, Ready, Deactivating, Deactivated, Unsupported, Rejected, Error]
           example: Ready
@@ -132,31 +138,37 @@ components:
           example: |-
             Unable to download the dataset https://caa.example.com/geozones.json. Connection refused.
 
+    GeospatialDataSourceResponse:
+      type: object
+      required:
+        - data_source
+      properties:
+        data_source:
+          $ref: '#/components/schemas/GeospatialDataSourceStatus'
+
+    ListGeospatialDataSourcesResponse:
+      type: object
+      properties:
+        data_sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeospatialDataSourceStatus'
+
     Position:
       type: object
       required:
-        - uomDimensions
-        - verticalReferenceType
+        - location
       properties:
-        uomDimensions:
-          $ref: './ed269.yaml#/components/schemas/UomDimensions'
-        verticalReferenceType:
-          $ref: './ed269.yaml#/components/schemas/VerticalReferenceType'
-        height:
+        altitude:
           description: >-
-            Height above vertical reference datum indicated in `verticalReferenceType`, in units of `uomDimensions`.
-          type: number
-          default: 0
-        longitude:
+            Position's height above a vertical reference datum.
+          anyOf:
+            - $ref: './astm_f3548_21.yaml#/components/schemas/Altitude'
+        location:
           description: >-
-            Longitude, degrees east of prime meridian.
-          type: number
-          default: 0
-        latitude:
-          description: >-
-            Latitude, degrees north of the equator.
-          type: number
-          default: 0
+            Position's horizontal (along Earth's surface) location.
+          anyOf:
+            - $ref: './astm_f3548_21.yaml#/components/schemas/LatLngPoint'
 
     GeospatialMapQueryRequest:
       type: object
@@ -173,7 +185,7 @@ components:
       required:
         - filterSets
       properties:
-        filterSets:
+        filter_sets:
           description: >-
             Select geospatial features which match any of the specified filter sets.
           type: array
@@ -247,12 +259,12 @@ components:
         Filter criteria for the selection of Geozones according to ED-269 characteristics.
       type: object
       properties:
-        uSpaceClass:
+        u_space_class:
           description: >-
-            If specified, only select Geozones which are of the specified `uSpaceClass`.
+            If specified, only select Geozones which are of the specified `u_space_class`.
           anyOf:
             - $ref: './ed269.yaml#/components/schemas/USpaceClass'
-        acceptableRestrictions:
+        acceptable_restrictions:
           description: >-
             If specified and non-empty, only select Geozones which are one of the specified restriction types.
           type: array
@@ -275,15 +287,18 @@ components:
       required:
         - featuresSelectionOutcome
       properties:
-        featuresSelectionOutcome:
+        features_selection_outcome:
           type: string
           description: >-
             Indication of whether one or more applicable geospatial features were selected according to the selection criteria of the corresponding check.
             
-            * Present: One or more applicable geospatial features were selected.
-            * Absent: No applicable geospatial features were selected.
-            * UnsupportedFilter: Applicable geospatial features could not be selected because one or more filter criteria are not supported by the USS.  If this value is specified, `message` must be populated.
-            * Error: An error or condition not enumerated above occurred.  If this value is specified, `message` must be populated.
+            - `Present`: One or more applicable geospatial features were selected.
+            
+            - `Absent`: No applicable geospatial features were selected.
+            
+            - `UnsupportedFilter`: Applicable geospatial features could not be selected because one or more filter criteria are not supported by the USS.  If this value is specified, `message` must be populated.
+            
+            - `Error`: An error or condition not enumerated above occurred.  If this value is specified, `message` must be populated.
           enum:
             - Present
             - Absent
@@ -310,7 +325,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
           description: >-
-            The USS automated testing interface is available and its status was retrieved successfully.
+            The USS's implementation of this automated testing interface is available and its status was retrieved successfully.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
@@ -319,6 +334,27 @@ paths:
           description: The USS automated testing interface is not available.
       summary: Status of the USS automated testing interface
       description: Get the status of the USS automated testing interface.
+
+  /geospatial_data_sources:
+    get:
+      security:
+        - TestAuthority:
+            - interuss.geospatial_map.direct_automated_test
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListGeospatialDataSourcesResponse'
+          description: >-
+            The USS's geospatial data sources loaded through this interface were retrieved successfully.
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+      operationId: ListGeospatialDataSources
+      summary: List geospatial data sources
+      description: Lists the geospatial data sources loaded by the USS at the request of the test director.
 
   /geospatial_data_sources/{geospatial_data_source_id}:
     parameters:
@@ -350,6 +386,8 @@ paths:
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '409':
+          description: A request with this ID has already been made to load a different data source.
       operationId: PutGeospatialDataSource
       summary: Import and activate a geospatial data source
       description: Instructs the USS to import and activate the geospatial data from the specified source.

@@ -3,18 +3,6 @@ info:
   title: Definitions used in geospatial map interface designed to align with data structures from ED-269
 components:
   schemas:
-    UomDimensions:
-      type: string
-      enum:
-        - M
-        - FT
-
-    VerticalReferenceType:
-      type: string
-      enum:
-        - AGL
-        - AMSL
-
     USpaceClass:
       type: string
       maxLength: 100
