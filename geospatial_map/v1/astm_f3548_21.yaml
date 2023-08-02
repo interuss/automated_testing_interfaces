@@ -70,11 +70,11 @@ components:
         units:
           description: >-
             The reference quantities used to express the value of altitude. See
-            FIXM 4.2. Currently, UTM only allows meters with no immediate plans
-            to allow other options.
+            FIXM 4.2.
           type: string
           enum:
             - M
+            - FT
     Latitude:
       description: >-
         Degrees of latitude north of the equator, with reference to the WGS84
