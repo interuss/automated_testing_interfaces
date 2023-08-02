@@ -92,10 +92,10 @@ components:
           description: >-
             User's current usage of the flight plan.
             
-            'Planned': The user intends to fly according to this flight plan, but is not currently using the defined
+            `Planned`: The user intends to fly according to this flight plan, but is not currently using the defined
               area with an active UAS.
             
-            'InUse': The user is currently using the defined area with an active UAS.
+            `InUse`: The user is currently using the defined area with an active UAS.
           type: string
           enum:
             - Planned
@@ -104,12 +104,12 @@ components:
           description: >-
             State of the user's UAS associated with this flight plan.
             
-              - 'Nominal': The user or UAS reports or implies that it is performing nominally.
+              - `Nominal`: The user or UAS reports or implies that it is performing nominally.
             
-              - 'OffNominal': The user or UAS reports or implies that it is temporarily not performing nominally, but
+              - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
                 expects to be able to recover to normal operation.
             
-              - 'Contingent': The user or UAS reports or implies that it is not performing nominally and may be unable
+              - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
                 to recover to normal operation.
           type: string
           enum:
@@ -176,11 +176,11 @@ components:
             Indication of whether any advisories or conditions were provided to the user along with the result of this
             flight planning attempt.
             
-              - 'Unknown': It is unknown or irrelevant whether advisories or conditions were provided to the user
+              - `Unknown`: It is unknown or irrelevant whether advisories or conditions were provided to the user
 
-              - 'Yes': At least one advisory or condition was provided to the user.
+              - `Yes`: At least one advisory or condition was provided to the user.
             
-              - 'No': No advisories or conditions were provided to the user.
+              - `No`: No advisories or conditions were provided to the user.
           type: string
           enum:
             - Unknown
