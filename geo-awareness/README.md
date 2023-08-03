@@ -1,5 +1,10 @@
 # Geo-Awareness automated testing interface
 
+---
+Note: This interface is DEPRECATED and will be REMOVED.  The replacement interface is the [geospatial map interface](../geospatial_map).
+
+---
+
 This folder contains the [USSP interface for Geo-Awareness automated testing](v1/geo-awareness.yaml).
 
 ## Overview

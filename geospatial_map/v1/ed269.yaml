@@ -1,0 +1,16 @@
+openapi: 3.0.2
+info:
+  title: Definitions used in geospatial map interface designed to align with data structures from ED-269
+components:
+  schemas:
+    USpaceClass:
+      type: string
+      maxLength: 100
+
+    Restriction:
+      type: string
+      enum:
+        - PROHIBITED
+        - REQ_AUTHORISATION
+        - CONDITIONAL
+        - NO_RESTRICTION
