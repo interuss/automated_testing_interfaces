@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Display Data Observation
-  version: 0.0.1
+  version: 0.0.2
   description: >-
     This interface is implemented by every Display Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to obtain current remote ID information from the perspective of the Display Provider.
@@ -86,6 +86,10 @@ components:
     GetDetailsResponse:
       description: Response to a request to get details about a flight.
       type: object
+      properties:
+        operator:
+          allOf:
+            - $ref: '#/components/schemas/Operator'
     Flight:
       description: ''
       required:
@@ -106,6 +110,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Path'
+    Operator:
+      description: "Operator's information"
+      type: object
+      properties:
+        id:
+          description: 'CAA-issued registration/license ID for the remote pilot or
+            operator. '
+          type: string
+        location:
+          anyOf:
+            - $ref: 'injection.yaml#/components/schemas/LatLngPoint'
+        altitude:
+          anyOf:
+            - $ref: 'injection.yaml#/components/schemas/OperatorAltitude'
     Cluster:
       description: 'A general area containing one or more flight.'
       type: object
@@ -138,23 +156,11 @@ components:
       type: object
       properties:
         lat:
-          format: double
-          description: >-
-            Degrees of latitude north of the equator, with reference to the WGS84 ellipsoid.
-          type: number
+          $ref: 'injection.yaml#/components/schemas/Latitude'
         lng:
-          format: double
-          description: >-
-            Degrees of longitude east of the Prime Meridian, with reference to the WGS84
-            ellipsoid.
-          type: number
+          $ref: 'injection.yaml#/components/schemas/Longitude'
         alt:
-          format: double
-          description: >-
-            Geodetic altitude (NOT altitude above launch, altitude above ground, or EGM96):
-            aircraft distance above the WGS84 ellipsoid as measured along a line that passes
-            through the aircraft and is normal to the surface of the WGS84 ellipsoid.
-          type: number
+          $ref: 'injection.yaml#/components/schemas/Altitude'
     Path:
       description: Path followed by a flight.
       required:
@@ -180,3 +186,4 @@ components:
 security:
   - RIDAuth:
       - dss.read.identification_service_areas
+
