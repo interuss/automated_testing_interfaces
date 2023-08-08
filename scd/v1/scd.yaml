@@ -567,6 +567,7 @@ components:
 paths:
   /v1/status:
     get:
+      deprecated: true
       security:
         - Authority:
             - utm.inject_test_data
@@ -589,6 +590,7 @@ paths:
 
   /v1/capabilities:
     get:
+      deprecated: true
       security:
       - Authority:
           - utm.inject_test_data
@@ -617,6 +619,7 @@ paths:
         $ref: '#/components/schemas/UUIDv4Format'
 
     put:
+      deprecated: true
       security:
         - Authority:
             - utm.inject_test_data
@@ -645,6 +648,7 @@ paths:
         This endpoint simulates the operator intention to submit a flight operation / flight request.
 
     delete:
+      deprecated: true
       security:
       - Authority:
         - utm.inject_test_data
@@ -668,6 +672,7 @@ paths:
 
   /v1/clear_area_requests:
     post:
+      deprecated: true
       security:
       - Authority:
         - utm.inject_test_data

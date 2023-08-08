@@ -10,6 +10,9 @@ info:
     
     The client may also (with a separate authorization scope) act as the test director to determine the status of the
     USS's system under test, and request that the test area be cleared of any dangling flight plans.
+    
+    Note: Unless otherwise specified, fields specified in a message but not declared in the API or otherwise known to
+    the server or client (as applicable) must be ignored.
 
 components:
   securitySchemes:
@@ -73,8 +76,8 @@ components:
           $ref: './scd.yaml#/components/schemas/ASTMF354821OpIntentInformation'
         uspace_flight_authorisation:
           $ref: './uspace.yaml#/components/schemas/FlightAuthorisationData'
-        au:
-          $ref: './au.yaml#/components/schemas/AUFlightDetails'
+        rpas_operating_rules_2_6:
+          $ref: './au.yaml#/components/schemas/RPAS26FlightDetails'
         additional_information:
           description: >-
             Any information relevant to a particular jurisdiction or use case not described in the standard schema. The
@@ -139,9 +142,16 @@ components:
       type: object
       required:
         - intended_flight
+        - request_id
       properties:
         intended_flight:
           $ref: '#/components/schemas/FlightPlan'
+        request_id:
+          description: >-
+            ID uniquely identifying the upsertion request.  If additional requests are received with the same
+            request_id, the response from the first request should be returned, or an error indicated.
+          anyOf:
+            - $ref: './astm_f3548_21.yaml#/components/schemas/UUIDv4Format'
 
     UpsertFlightPlanResponse:
       type: object
@@ -234,8 +244,6 @@ components:
             - $ref: './astm_f3548_21.yaml#/components/schemas/Volume4D'
     ClearAreaOutcome:
       type: object
-      required:
-        - timestamp
       properties:
         success:
           description: >-
@@ -318,7 +326,7 @@ paths:
         required: true
         description: A UUID string identifying the user's flight plan intent.
         schema:
-          $ref: '#/components/schemas/UUIDv4Format'
+          $ref: './astm_f3548_21.yaml#/components/schemas/UUIDv4Format'
 
     put:
       security:
@@ -342,6 +350,8 @@ paths:
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '409':
+          description: The request contains a duplicate request_id and the response for that request is not available, or another conflict condition occurred.
 
       summary: Upsert flight plan
       operationId: UpsertFlightPlan

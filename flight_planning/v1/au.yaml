@@ -3,9 +3,9 @@ info:
   title: Australia-specific flight planning information schemas.
 components:
   schemas:
-    AUFlightDetails:
+    RPAS26FlightDetails:
       description: >-
-        Information about a flight necessary to plan successfully in Australia.
+        Information about a flight necessary to plan successfully using the RPAS Platform Operating Rules version 2.6.
       type: object
       properties:
         operator_type:
