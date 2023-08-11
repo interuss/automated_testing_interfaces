@@ -4,8 +4,10 @@ This repository houses the interfaces a USS/USSP must implement in order to be t
 
 ## Interfaces
 
-* [Geo-awareness](geo-awareness/README.md)
+* [Geo-awareness](geo-awareness/README.md) (DEPRECATED; see [Geospatial map](geospatial_map) instead)
   * [v1 YAML](geo-awareness/v1/geo-awareness.yaml)
+* [Geospatial map](geospatial_map/README.md)
+  * [v1 YAML](geospatial_map/v1/geospatial_map.yaml) 
 * [Remote ID](rid/README.md)
   * Injection (for NetRID Service Providers)
     * [v1 YAML](rid/v1/injection.yaml)

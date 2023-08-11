@@ -1,0 +1,181 @@
+openapi: 3.0.2
+info:
+  title: Definitions used in geospatial map interface designed to align with data structures from ASTM F3548-21
+components:
+  schemas:
+    Time:
+      required:
+        - value
+        - format
+      type: object
+      properties:
+        value:
+          type: string
+          description: >-
+            RFC3339-formatted time/date string.  The time zone must be 'Z'.
+          format: date-time
+          example: '1985-04-12T23:20:50.52Z'
+        format:
+          type: string
+          enum:
+            - RFC3339
+    Radius:
+      required:
+        - value
+        - units
+      type: object
+      properties:
+        value:
+          format: float
+          description: >-
+            Distance from the centerpoint of a circular area, along the WGS84
+            ellipsoid.
+          type: number
+          minimum: 0
+          exclusiveMinimum: true
+          example: 300.183
+        units:
+          type: string
+          description: >-
+            FIXM-compatible units.  Only meters ("M") are acceptable for UTM.
+          enum:
+            - M
+    Altitude:
+      type: object
+      required:
+        - value
+        - reference
+        - units
+      properties:
+        value:
+          description: >-
+            The numeric value of the altitude. Note that min and max values are
+            added as a sanity check. As use cases evolve and more options are
+            made available in terms of units of measure or reference systems,
+            these bounds may be re-evaluated.
+          type: number
+          format: double
+          minimum: -8000
+          exclusiveMinimum: false
+          maximum: 100000
+          exclusiveMaximum: false
+        reference:
+          description: >-
+            A code indicating the reference for a vertical distance. See AIXM
+            5.1 and FIXM 4.2.0.
+          type: string
+          enum:
+            - W84
+            - SFC
+        units:
+          description: >-
+            The reference quantities used to express the value of altitude. See
+            FIXM 4.2.
+          type: string
+          enum:
+            - M
+            - FT
+    Latitude:
+      description: >-
+        Degrees of latitude north of the equator, with reference to the WGS84
+        ellipsoid.
+      maximum: 90
+      exclusiveMaximum: false
+      minimum: -90
+      exclusiveMinimum: false
+      type: number
+      format: double
+      example: 34.123
+    Longitude:
+      description: >-
+        Degrees of longitude east of the Prime Meridian, with reference to the
+        WGS84 ellipsoid.
+      minimum: -180
+      exclusiveMaximum: false
+      maximum: 180
+      exclusiveMinimum: false
+      type: number
+      format: double
+      example: -118.456
+    Polygon:
+      description: >-
+        An enclosed area on the earth. The bounding edges of this polygon are
+        defined to be the shortest paths between connected vertices.  This
+        means, for instance, that the edge between two points both defined at a
+        particular latitude is not generally contained at that latitude. The
+        winding order must be interpreted as the order which produces the
+        smaller area. The path between two vertices is defined to be the
+        shortest possible path between those vertices. Edges may not cross.
+        Vertices may not be duplicated.  In particular, the final polygon vertex
+        must not be identical to the first vertex.
+      required:
+        - vertices
+      type: object
+      properties:
+        vertices:
+          minItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/LatLngPoint'
+    LatLngPoint:
+      description: Point on the earth's surface.
+      required:
+        - lat
+        - lng
+      type: object
+      properties:
+        lng:
+          $ref: '#/components/schemas/Longitude'
+        lat:
+          $ref: '#/components/schemas/Latitude'
+    Circle:
+      description: A circular area on the surface of the earth.
+      type: object
+      properties:
+        center:
+          $ref: '#/components/schemas/LatLngPoint'
+        radius:
+          $ref: '#/components/schemas/Radius'
+    Volume3D:
+      description: >-
+        A three-dimensional geographic volume consisting of a
+        vertically-extruded shape. Exactly one outline must be specified.
+      type: object
+      properties:
+        outline_circle:
+          anyOf:
+            - $ref: '#/components/schemas/Circle'
+          description: A circular geographic shape on the surface of the earth.
+        outline_polygon:
+          anyOf:
+            - $ref: '#/components/schemas/Polygon'
+          description: >-
+            A polygonal geographic shape on the surface of the earth.
+        altitude_lower:
+          description: >-
+            Minimum bounding altitude of this volume. Must be less than
+            altitude_upper, if specified.
+          anyOf:
+            - $ref: '#/components/schemas/Altitude'
+        altitude_upper:
+          description: >-
+            Maximum bounding altitude of this volume. Must be greater than
+            altitude_lower, if specified.
+          anyOf:
+            - $ref: '#/components/schemas/Altitude'
+    Volume4D:
+      description: Contiguous block of geographic spacetime.
+      required:
+        - volume
+      type: object
+      properties:
+        volume:
+          $ref: '#/components/schemas/Volume3D'
+        time_start:
+          description: Beginning time of this volume. Must be before time_end.
+          anyOf:
+            - $ref: '#/components/schemas/Time'
+        time_end:
+          description: End time of this volume. Must be after time_start.
+          anyOf:
+            - $ref: '#/components/schemas/Time'
