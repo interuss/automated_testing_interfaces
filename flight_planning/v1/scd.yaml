@@ -1,0 +1,14 @@
+openapi: 3.0.2
+info:
+  title: Definitions used in flight planning interface specific to strategic conflict detection, but not using data structures aligned with ones defined in ASTM F3548-21.
+components:
+  schemas:
+    Foo:
+      type: object
+    ASTMF354821OpIntentInformation:
+      description: >-
+        Information provided about a flight plan that is necessary for ASTM F3548-21.
+      type: object
+      properties:
+        priority:
+          $ref: './astm_f3548_21.yaml#/components/schemas/Priority'

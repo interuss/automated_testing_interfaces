@@ -13,5 +13,7 @@ This repository houses the interfaces a USS/USSP must implement in order to be t
     * [v1 YAML](rid/v1/injection.yaml)
   * Observation (for NetRID Display Providers/Display Applications)
     * [v1 YAML](rid/v1/observation.yaml)
-* [Flight planning](scd/README.md)
+* [SCD](scd/README.md) (will be deprecated; see [flight planning](flight_planning) instead)
   * [v1 YAML](scd/v1/scd.yaml)
+* [Flight planning](flight_planning/README.md)
+  * [v1 YAML](flight_planning/v1/flight_planning.yaml)

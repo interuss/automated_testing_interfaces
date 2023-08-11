@@ -1,5 +1,10 @@
 # Flight planning automated testing interface
 
+---
+Note: This interface will be DEPRECATED and REMOVED.  The replacement interface will be the [flight planning interface](../flight_planning).
+
+---
+
 This folder contains the [USSP interface for flight planning automated testing](v1/scd.yaml).
 
 ## Overview

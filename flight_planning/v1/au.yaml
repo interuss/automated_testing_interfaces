@@ -1,0 +1,63 @@
+openapi: 3.0.2
+info:
+  title: Australia-specific flight planning information schemas.
+components:
+  schemas:
+    RPAS26FlightDetails:
+      description: >-
+        Information about a flight necessary to plan successfully using the RPAS Platform Operating Rules version 2.6.
+      type: object
+      properties:
+        operator_type:
+          description: The type of operator.
+          type: string
+          enum:
+            - Recreational
+            - CommercialExcluded
+            - ReOC
+        uas_serial_numbers:
+          description: The list of UAS/drone serial numbers that will be operated during the operation.
+          type: array
+          items:
+            type: string
+        uas_registration_numbers:
+          description: The list of UAS/drone registration numbers that will be operated during the operation.
+          type: array
+          items:
+            type: string
+        aircraft_type:
+          description: Type of vehicle being used as per ASTM F3411-22a.
+          type: string
+          enum:
+            - NotDeclared
+            - Aeroplane
+            - Helicopter
+            - Gyroplane
+            - HybridLift
+            - Ornithopter
+            - Glider
+            - Kite
+            - FreeBalloon
+            - CaptiveBalloon
+            - Airship
+            - FreeFallOrParachute
+            - Rocket
+            - TetheredPoweredAircraft
+            - GroundObstacle
+            - Other
+        flight_profile:
+          description: Type of flight profile.
+          type: string
+          enum:
+            - AutomatedGrid
+            - AutomatedWaypoint
+            - Manual
+        pilot_license_number:
+          description: License number for the pilot.
+          type: string
+        pilot_phone_number:
+          description: Contact phone number for the pilot.
+          type: string
+        operator_number:
+          description: Operator number.
+          type: string
