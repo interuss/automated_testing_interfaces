@@ -325,23 +325,6 @@ components:
           type: string
         position:
           $ref: '#/components/schemas/RIDAircraftPosition'
-    RIDTrack:
-      format: float
-      description: Direction of flight expressed as a "True North-based" ground
-        track angle.  This value is provided in degrees East of North with a minimum
-        resolution of 1 degree.
-      maximum: 360
-      exclusiveMaximum: true
-      minimum: 0
-      exclusiveMinimum: false
-      type: number
-    RIDSpeed:
-      format: float
-      description: Ground speed of flight in meters per second.
-      minimum: 0
-      exclusiveMinimum: false
-      type: number
-      example: 1.9
     RIDAircraftState:
       description: State of an aircraft for the purposes of remote ID.
       required:
@@ -380,9 +363,9 @@ components:
         position:
           $ref: '#/components/schemas/RIDAircraftPosition'
         track:
-          $ref: '#/components/schemas/RIDTrack'
+          $ref: 'commons.yaml#/components/schemas/RIDTrack'
         speed:
-          $ref: '#/components/schemas/RIDSpeed'
+          $ref: 'commons.yaml#/components/schemas/RIDSpeed'
         speed_accuracy:
           anyOf:
             - $ref: '#/components/schemas/SpeedAccuracy'

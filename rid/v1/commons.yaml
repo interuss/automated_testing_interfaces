@@ -79,3 +79,20 @@ components:
             - TakeoffLocation
             - GroundLevel
           type: string
+    RIDSpeed:
+      format: float
+      description: Ground speed of flight in meters per second.
+      minimum: 0
+      exclusiveMinimum: false
+      type: number
+      example: 1.9
+    RIDTrack:
+      format: float
+      description: Direction of flight expressed as a "True North-based" ground
+        track angle.  This value is provided in degrees East of North with a minimum
+        resolution of 1 degree.
+      maximum: 360
+      exclusiveMaximum: true
+      minimum: 0
+      exclusiveMinimum: false
+      type: number

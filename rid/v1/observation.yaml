@@ -88,8 +88,11 @@ components:
       type: object
       properties:
         operator:
-          allOf:
+          anyOf:
             - $ref: '#/components/schemas/Operator'
+        uas:
+          anyOf:
+            - $ref: '#/components/schemas/UAS'
     Flight:
       description: ''
       required:
@@ -101,6 +104,8 @@ components:
             Identifier of flight that may be used to obtain details about the flight.
             This is not necessarily the UTM/flight ID in the remote ID system.
           type: string
+        current_state:
+          $ref: '#/components/schemas/CurrentState'
         most_recent_position:
           description: Most recent position known for the flight.
           allOf:
@@ -110,13 +115,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Path'
+    CurrentState:
+      description: 'Current state of an aircraft.'
+      type: object
+      properties:
+        timestamp:
+          description: Time at which this state was valid.
+          type: string
+        track:
+          $ref: 'commons.yaml#/components/schemas/RIDTrack'
+        speed:
+          $ref: 'commons.yaml#/components/schemas/RIDSpeed'
+        # TODO for next version: Move most_recent_position here.
     Operator:
       description: "Operator's information"
       type: object
       properties:
         id:
-          description: 'CAA-issued registration/license ID for the remote pilot or
-            operator. '
+          description: >-
+            CAA-issued registration/license ID for the remote pilot or operator.
           type: string
         location:
           anyOf:
@@ -147,7 +164,7 @@ components:
           description: Number of flights within the cluster.
           type: number
           format: int32
-          minValue: 1
+          minimum: 1
     Position:
       description: 'A position on Earth.'
       required:
@@ -161,6 +178,8 @@ components:
           $ref: 'commons.yaml#/components/schemas/Longitude'
         alt:
           $ref: 'commons.yaml#/components/schemas/Altitude'
+        height:
+          $ref: 'commons.yaml#/components/schemas/RIDHeight'
     Path:
       description: Path followed by a flight.
       required:
