@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Definitions used in RID ASTM F3411-22a injection and observation interfaces
+  title: Definitions used for the injection and observation interfaces
   version: 0.1.0
 components:
   schemas:

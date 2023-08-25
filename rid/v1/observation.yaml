@@ -148,7 +148,7 @@ components:
       type: object
       properties:
         id:
-          description: Format agnostic identification of the UAS performing this flight.
+          description: Observed arbitrary and format agnostic (string) identification of a UAS.
           type: string
     Cluster:
       description: 'A general area containing one or more flight.'
