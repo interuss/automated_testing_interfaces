@@ -120,10 +120,10 @@ components:
           type: string
         location:
           anyOf:
-            - $ref: 'injection.yaml#/components/schemas/LatLngPoint'
+            - $ref: 'commons.yaml#/components/schemas/LatLngPoint'
         altitude:
           anyOf:
-            - $ref: 'injection.yaml#/components/schemas/OperatorAltitude'
+            - $ref: 'commons.yaml#/components/schemas/OperatorAltitude'
     Cluster:
       description: 'A general area containing one or more flight.'
       type: object
@@ -156,11 +156,11 @@ components:
       type: object
       properties:
         lat:
-          $ref: 'injection.yaml#/components/schemas/Latitude'
+          $ref: 'commons.yaml#/components/schemas/Latitude'
         lng:
-          $ref: 'injection.yaml#/components/schemas/Longitude'
+          $ref: 'commons.yaml#/components/schemas/Longitude'
         alt:
-          $ref: 'injection.yaml#/components/schemas/Altitude'
+          $ref: 'commons.yaml#/components/schemas/Altitude'
     Path:
       description: Path followed by a flight.
       required:
