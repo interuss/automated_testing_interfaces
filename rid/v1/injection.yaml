@@ -254,15 +254,6 @@ components:
             deltas" between aircraft.  This value is provided in meters and must have
             a minimum resolution of 1 meter.
           type: number
-    RIDOperationalStatus:
-      description: Indicates operational status of associated aircraft.
-      enum:
-        - Undeclared
-        - Ground
-        - Airborne
-        - Emergency
-        - RemoteIDSystemFailure
-      type: string
     RIDFlightDetails:
       description: Details about a flight reported by a remote ID service provider.  At
         least one of the registration or serial fields must be filled if required

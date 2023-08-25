@@ -122,6 +122,8 @@ components:
         timestamp:
           description: Time at which this state was valid.
           type: string
+        operational_status:
+          $ref: 'commons.yaml#/components/schemas/RIDOperationalStatus'
         track:
           $ref: 'commons.yaml#/components/schemas/RIDTrack'
         speed:
@@ -141,6 +143,13 @@ components:
         altitude:
           anyOf:
             - $ref: 'commons.yaml#/components/schemas/OperatorAltitude'
+    UAS:
+      description: 'UAS information'
+      type: object
+      properties:
+        id:
+          description: Format agnostic identification of the UAS performing this flight.
+          type: string
     Cluster:
       description: 'A general area containing one or more flight.'
       type: object

@@ -79,6 +79,15 @@ components:
             - TakeoffLocation
             - GroundLevel
           type: string
+    RIDOperationalStatus:
+      description: Indicates operational status of associated aircraft.
+      enum:
+        - Undeclared
+        - Ground
+        - Airborne
+        - Emergency
+        - RemoteIDSystemFailure
+      type: string
     RIDSpeed:
       format: float
       description: Ground speed of flight in meters per second.
