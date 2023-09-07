@@ -6,11 +6,7 @@ components:
   schemas:
     Altitude:
       format: float
-      description: 'Geodetic altitude (NOT altitude above launch, altitude above
-        ground, or EGM96): aircraft distance above the WGS84 ellipsoid as measured
-        along a line that passes through the aircraft and is normal to the surface
-        of the WGS84 ellipsoid.  This value is provided in meters and must have
-        a minimum resolution of 1 meter.'
+      description: An altitude, in meters, above the WGS84 ellipsoid.
       type: number
       example: 1321.2
     Latitude:
