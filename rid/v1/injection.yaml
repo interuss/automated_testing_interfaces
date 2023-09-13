@@ -350,7 +350,7 @@ components:
           exclusiveMinimum: false
           type: number
         operational_status:
-          $ref: '#/components/schemas/RIDOperationalStatus'
+          $ref: 'commons.yaml#/components/schemas/RIDOperationalStatus'
         position:
           $ref: '#/components/schemas/RIDAircraftPosition'
         track:
