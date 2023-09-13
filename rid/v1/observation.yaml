@@ -140,12 +140,9 @@ components:
         location:
           anyOf:
             - $ref: 'commons.yaml#/components/schemas/LatLngPoint'
-        location_type:
-          $ref: 'commons.yaml#/components/schemas/OperatorLocationType'
         altitude:
-          description: Altitude associated with the Remote Pilot
           anyOf:
-            - $ref: 'commons.yaml#/components/schemas/Altitude'
+            - $ref: 'commons.yaml#/components/schemas/OperatorAltitude'
     UAS:
       description: 'UAS information'
       type: object

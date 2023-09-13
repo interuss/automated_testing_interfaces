@@ -44,13 +44,19 @@ components:
       description: 'CAA-issued registration/license ID for the remote pilot or
         operator. '
       type: string
-    OperatorLocationType:
-      description: Takeoff location, fixed location, or dynamic location representing the Operator Location
-      type: string
-      enum:
-        - Takeoff
-        - Dynamic
-        - Fixed
+    OperatorAltitude:
+      description: Altitude associated with the Remote Pilot
+      type: object
+      properties:
+        altitude:
+          $ref: "#/components/schemas/Altitude"
+        altitude_type:
+          description: Source of data for the altitude field.
+          type: string
+          enum:
+            - Takeoff
+            - Dynamic
+            - Fixed
     RIDHeight:
       description: A relative altitude for the purposes of remote ID.
       required:
