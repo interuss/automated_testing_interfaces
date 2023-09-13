@@ -272,6 +272,12 @@ components:
           anyOf:
             - $ref: 'commons.yaml#/components/schemas/LatLngPoint'
           description: Location of party controlling the aircraft.
+        operator_altitude:
+          description: Altitude associated with the Remote Pilot
+          anyOf:
+            - $ref: 'commons.yaml#/components/schemas/Altitude'
+        operator_location_type:
+          $ref: 'commons.yaml#/components/schemas/OperatorLocationType'
         operation_description:
           description: Free-text field that enables the operator to describe the purpose
             of a flight, if so desired.
@@ -294,8 +300,6 @@ components:
           example: FA12345897
         uas_id:
           $ref: '#/components/schemas/UASID'
-        operator_altitude:
-          $ref: 'commons.yaml#/components/schemas/OperatorAltitude'
         eu_classification:
           description: When this field is specified, the Classification Type is "European
             Union".  If no other classification field is specified, the Classification Type
