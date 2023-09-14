@@ -230,6 +230,8 @@ components:
           $ref: 'commons.yaml#/components/schemas/Longitude'
         alt:
           $ref: 'commons.yaml#/components/schemas/Altitude'
+        height:
+          $ref: 'commons.yaml#/components/schemas/RIDHeight'
         accuracy_h:
           anyOf:
             - $ref: '#/components/schemas/HorizontalAccuracy'
