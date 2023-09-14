@@ -1,0 +1,103 @@
+openapi: 3.2.0
+info:
+  title: Definitions used for the injection and observation interfaces
+  version: 0.1.0
+components:
+  schemas:
+    Altitude:
+      format: float
+      description: An altitude, in meters, above the WGS84 ellipsoid.
+      type: number
+      example: 1321.2
+    Latitude:
+      format: double
+      description: Degrees of latitude north of the equator, with reference to the
+        WGS84 ellipsoid.
+      maximum: 90
+      exclusiveMaximum: false
+      minimum: -90
+      exclusiveMinimum: false
+      type: number
+      example: 34.123
+    Longitude:
+      format: double
+      description: Degrees of longitude east of the Prime Meridian, with reference
+        to the WGS84 ellipsoid.
+      maximum: -180
+      exclusiveMaximum: false
+      minimum: 180
+      exclusiveMinimum: false
+      type: number
+      example: -118.456
+    LatLngPoint:
+      description: Point on the earth's surface.
+      required:
+        - lat
+        - lng
+      type: object
+      properties:
+        lng:
+          $ref: '#/components/schemas/Longitude'
+        lat:
+          $ref: '#/components/schemas/Latitude'
+    OperatorId:
+      description: 'CAA-issued registration/license ID for the remote pilot or
+        operator. '
+      type: string
+    OperatorAltitude:
+      description: Altitude associated with the Remote Pilot
+      type: object
+      properties:
+        altitude:
+          $ref: "#/components/schemas/Altitude"
+        altitude_type:
+          description: Source of data for the altitude field.
+          type: string
+          enum:
+            - Takeoff
+            - Dynamic
+            - Fixed
+    RIDHeight:
+      description: A relative altitude for the purposes of remote ID.
+      required:
+        - distance
+        - reference
+      type: object
+      properties:
+        distance:
+          format: float
+          description: Distance above reference datum.  This value is provided in
+            meters and must have a minimum resolution of 1 meter.
+          type: number
+        reference:
+          description: The reference datum above which the height is reported.
+          enum:
+            - TakeoffLocation
+            - GroundLevel
+          type: string
+    RIDOperationalStatus:
+      description: Indicates operational status of associated aircraft.
+      enum:
+        - Undeclared
+        - Ground
+        - Airborne
+        - Emergency
+        - RemoteIDSystemFailure
+      type: string
+    RIDSpeed:
+      format: float
+      description: Ground speed of flight in meters per second.
+      minimum: 0
+      exclusiveMinimum: false
+      type: number
+      example: 1.9
+    RIDTrack:
+      format: float
+      description: Direction of flight expressed as a "True North-based" ground
+        track angle.  This value is provided in degrees East of North with a minimum
+        resolution of 1 degree.
+      maximum: 360
+      exclusiveMaximum: true
+      minimum: 0
+      exclusiveMinimum: false
+      type: number
