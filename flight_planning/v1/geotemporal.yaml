@@ -1,25 +1,11 @@
 openapi: 3.0.2
 info:
-  title: Definitions used in flight planning interface designed to align with data structures from ASTM F3548-21
+  title: >-
+    Geotemporal definitions used in flight planning interface.
+    
+    Note that these data structures are designed to align with data structures from ASTM F3548-21.
 components:
   schemas:
-    UUIDv4Format:
-      description: >-
-        String whose format matches a version-4 UUID according to RFC 4122.
-      maxLength: 36
-      minLength: 36
-      type: string
-      format: uuid
-      pattern: >-
-        ^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-4[0-9a-fA-F]{3}\\-[8-b][0-9a-fA-F]{3}\\-[0-9a-fA-F]{12}$
-      example: 03e5572a-f733-49af-bc14-8a18bd53ee39
-    EntityID:
-      description: >-
-        Identifier for an Entity communicated through the DSS.  Formatted as a
-        UUIDv4.
-      anyOf:
-        - $ref: '#/components/schemas/UUIDv4Format'
-      example: 2f8343be-6482-4d1b-a474-16847e01af1e
     Time:
       required:
         - value
@@ -197,17 +183,3 @@ components:
           description: End time of this volume. Must be after time_start.
           anyOf:
             - $ref: '#/components/schemas/Time'
-    OperationalIntentState:
-      description: >-
-        State of an operational intent as defined in ASTM F3548-21.
-      type: string
-      enum:
-        - Accepted
-        - Activated
-        - Nonconforming
-        - Contingent
-    Priority:
-      description: >-
-        Ordinal priority of the operational intent, as defined in ASTM F3548-21.
-      type: integer
-      default: 0
