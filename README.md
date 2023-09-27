@@ -17,3 +17,5 @@ This repository houses the interfaces a USS/USSP must implement in order to be t
   * [v1 YAML](scd/v1/scd.yaml)
 * [Flight planning](flight_planning/README.md)
   * [v1 YAML](flight_planning/v1/flight_planning.yaml)
+* [Versioning](versioning/README.md)
+  * [YAML](versioning/versioning.yaml)
