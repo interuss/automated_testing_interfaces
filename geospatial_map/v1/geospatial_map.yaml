@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Geospatial Map Provider Automated Testing Interface
-  version: 0.1.0
+  version: 0.2.0
   license:
     name: Apache License v2.0
     url: https://github.com/interuss/automated_testing_interfaces/blob/main/LICENSE.md
@@ -63,11 +63,6 @@ components:
           type: string
           enum: [Starting, Ready]
           example: Ready
-        system_version:
-          description: |-
-            Arbitrary string representing the version of the USS system to be tested.
-          type: string
-          example: v0.0.1-445ad3
         api_name:
           description: |-
             Indication of the API implemented at this URL.  Must be "Geospatial Map Provider Automated Testing Interface".
@@ -75,9 +70,9 @@ components:
           example: Geospatial Map Provider Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.1.0" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.2.0" when implementing this version of the API.
           type: string
-          example: v0.1.0
+          example: v0.2.0
 
     CreateGeospatialDataSourceRequest:
       type: object
