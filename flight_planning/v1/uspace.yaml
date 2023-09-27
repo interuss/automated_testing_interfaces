@@ -1,6 +1,7 @@
 openapi: 3.0.2
 info:
   title: Definitions used in flight planning interface specific to U-space flight authorisation.
+  version: 0.0.1
 components:
   schemas:
     FlightAuthorisationData:

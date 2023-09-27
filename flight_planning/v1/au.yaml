@@ -1,6 +1,7 @@
 openapi: 3.0.2
 info:
   title: Australia-specific flight planning information schemas.
+  version: 0.0.1
 components:
   schemas:
     RPAS26FlightDetails:
