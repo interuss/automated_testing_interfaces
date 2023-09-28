@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Geo-Awareness Automated Test Interfaces
-  version: 0.1.0
+  version: 0.2.0
   license:
     name: Apache License v2.0
     url: https://github.com/interuss/dss/blob/master/LICENSE
@@ -53,11 +53,6 @@ components:
           type: string
           enum: [Starting, Ready]
           example: Ready
-        version:
-          description: |-
-            Arbitrary string representing the version of the USS system to be tested.
-          type: string
-          example: v0.0.1-445ad3
 
     CreateGeozoneSourceRequest:
       type: object
