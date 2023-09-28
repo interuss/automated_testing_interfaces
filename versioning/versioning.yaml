@@ -1,0 +1,88 @@
+openapi: 3.0.2
+info:
+  title: Versioning Automated Testing Interface
+  version: 0.1.0
+  description: >-
+    This interface is implemented by a USS wishing to provide information about the version(s) of its software to
+    authorized recipients in an automated fashion.
+    
+    Note: Unless otherwise specified, fields specified in a message but not declared in the API or otherwise known to
+    the server or client (as applicable) must be ignored.
+
+components:
+  securitySchemes:
+    Authority:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.example.com/oauth/token
+          scopes:
+            interuss.versioning.read_system_versions: |-
+              Client may read the version(s) of the USS's software deployed in this environment.
+      description: |-
+        Authorization from, or on behalf of, an authorization authority, for the purpose of facilitating automated testing.
+
+  schemas:
+    SystemBoundaryIdentifier:
+      type: string
+      description: >-
+        Identifier of a system boundary, known to both the client and the USS separate from this API, for which a USS
+        can provide a version.  While the format is not prescribed by this API, any value must be URL-safe.  It is
+        recommended to use an approach similar to reverse-order Internet domain names and Java packages where the global
+        scope is described with increasingly-precise identifiers joined by periods.  For instance, the system boundary
+        containing the mandatory Network Identification U-space service might be identified with
+        `gov.eu.uspace.v1.netid` because the authority defining this system boundary is a governmental organization
+        (specifically, the European Union) with requirements imposed on the system under test by the U-space regulation
+        (first version) -- specifically, the Network Identification Service section.
+      example: gov.au.casa.operating_rules.v2_6
+
+    VersionIdentifier:
+      type: string
+      description: >-
+        Identifier of a particular version of a system (defined by a known system boundary).  While the format is not
+        prescribed by this API, a semantic version (https://semver.org/) prefixed with a `v` is recommended.
+      example: v2.19.53117-rc8+d3a7521f
+
+    GetVersionResponse:
+      type: object
+      properties:
+        system_identity:
+          description: The requested system identity/boundary.
+          anyOf:
+            - $ref: '#/components/schemas/SystemBoundaryIdentifier'
+        system_version:
+          description: The USS's version for the system with the specified system identity/boundary.
+          anyOf:
+            - $ref: '#/components/schemas/VersionIdentifier'
+
+paths:
+  /versions/{system_identity}:
+    parameters:
+      - name: system_identity
+        in: path
+        required: true
+        description: The system identity/boundary for which a version should be provided, if known.
+        schema:
+          $ref: '#/components/schemas/SystemBoundaryIdentifier'
+
+    get:
+      security:
+        - Authority:
+            - interuss.versioning.read_system_versions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVersionResponse'
+          description: >-
+            The USS successfully provided the version of the system identity/boundary that was requested.
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '404':
+          description: The requested system identity/boundary is not known, or the versioning automated testing interface is not available.
+      summary: System version
+      description: Get the requested system version.
+      operationId: GetVersion
