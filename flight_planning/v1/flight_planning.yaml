@@ -119,7 +119,8 @@ components:
           description: >-
             State of the user's UAS associated with this flight plan.
             
-              - `Nominal`: The user or UAS reports or implies that it is performing nominally.
+              - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
+                `OffNominal` or `Contingent`.
             
               - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
                 may expect to be able to recover to normal operation.
@@ -140,12 +141,16 @@ components:
           default: []
 
     UpsertFlightPlanRequest:
+      description: >-
+        Client request to emulate a user performing a flight planning action.  Note that the USS should consider the
+        user to be actually performing (or attempting to perform) this action, and should not consider the user to be
+        merely exploring the possibility of performing the action, or merely requesting to perform the action.
       type: object
       required:
-        - intended_flight
+        - flight
         - request_id
       properties:
-        intended_flight:
+        flight:
           $ref: '#/components/schemas/FlightPlan'
         request_id:
           type: string
@@ -153,24 +158,35 @@ components:
             ID uniquely identifying the upsertion request.  If additional requests are received with the same
             request_id, the response from the first request should be returned, or an error indicated.
 
-    PlanningResult:
+    PlanningActivityResult:
       type: string
       description: >-
         The result of a flight planning activity.
 
-          - `Planned`: The data submitted in the flight plan intent was valid and the flight plan was successfully processed by the USS and is now authorized, but the user may not yet start flying (even if within the time bounds of the flight plan).
+          - `Completed`: The user's flight plan has been updated according to the situation specified by the user. 
+
+          - `Rejected`: The updates the user requested to their flight plan are not allowed according to the rules under which the flight plan is being managed.  The reasons for rejection may include a disallowed conflict with another flight during preflight.
+        
+          - `Failed`: The USS was not able to successfully authorize or update the flight plan due to a problem with the USS or a downstream system.
+
+          - `NotSupported`: The USS's implementation does not support the attempted interaction.  For instance, if the request specified a high-priority flight and the USS does not support management of high-priority flights.
+      enum: [Planned, ReadyToFly, OffNominal, Rejected, Failed, NotSupported]
+      example: Planned
+
+    FlightPlanStatus:
+      type: string
+      description: >-
+        The status of the user's flight plan.
+
+          - `NotPlanned`: The USS has not created an authorized flight plan for the user.
+
+          - `Planned`: The USS has created an authorized flight plan for the user, but the user may not yet start flying (even if within the time bounds of the flight plan).
 
           - `ReadyToFly`: The flight plan is ready for the operator to nominally fly within the bounds (including time) of the flight plan.
 
           - `OffNominal`: The flight plan now reflects the operator's actions, but the flight plan is not in a nominal state (e.g., the USS has placed the ASTM F3548-21 operational intent into one of the Nonconforming or Contingent states).
 
-          - `Rejected`: The data provided in the flight plan was invalid and/or could not be used to successfully authorize or update the flight.  The reasons for rejection may include a disallowed conflict with another flight.
-        
           - `Closed`: The flight plan was closed successfully by the USS and is now out of the UTM system.
-
-          - `Failed`: The USS was not able to successfully authorize or update the flight plan due to a problem with the USS or a downstream system.
-
-          - `NotSupported`: The USS's implementation does not support the attempted interaction.  For instance, if the request specified a high-priority flight and the USS does not support management of high-priority flights.
       enum: [Planned, ReadyToFly, OffNominal, Rejected, Failed, NotSupported]
       example: Planned
 
@@ -192,14 +208,15 @@ components:
     UpsertFlightPlanResponse:
       type: object
       required:
-        - result
+        - planning_result
+        - flight_plan_status
       properties:
-        result:
+        planning_result:
           description: >-
-            The result of the flight plan submission.
-            If any option other than `Planned` or `ReadyToFly` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
+            The result of the flight plan creation or update attempt.
+            If any option other than `Completed` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
           anyOf:
-            - $ref: '#/components/schemas/PlanningResult'
+            - $ref: '#/components/schemas/PlanningActivityResult'
         notes:
           description: >-
             Human-readable explanation of the observed result.  This explanation
@@ -210,24 +227,38 @@ components:
             valid request (perhaps also including the valid request as proof).
           type: string
           example: Requested flight intersected operational intent c036326c-c97b-4926-bf9f-c60dc83d2b57
+        flight_plan_status:
+          description: >-
+            The status of the user's flight plan following the flight planning activity.
+          anyOf:
+            - $ref: '#/components/schemas/FlightPlanStatus'
         includes_advisories:
           $ref: '#/components/schemas/AdvisoryInclusion'
 
     DeleteFlightPlanResponse:
       type: object
       required:
-        - result
+        - planning_result
+        - flight_plan_status
       properties:
-        result:
+        planning_result:
           description: >-
             The result of attempted flight plan cancellation/closure.
+            If any option other than `Completed` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
           anyOf:
-            - $ref: '#/components/schemas/PlanningResult'
+            - $ref: '#/components/schemas/PlanningActivityResult'
         notes:
           description: >-
             Human-readable explanation of the observed result.
           type: string
           example: DSS was unreachable when attempting to delete operational intent reference
+        flight_plan_status:
+          description: >-
+            The status of the user's flight plan following the flight planning activity.
+          anyOf:
+            - $ref: '#/components/schemas/FlightPlanStatus'
+        includes_advisories:
+          $ref: '#/components/schemas/AdvisoryInclusion'
 
     ClearAreaRequest:
       type: object
