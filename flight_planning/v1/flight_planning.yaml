@@ -170,8 +170,8 @@ components:
           - `Failed`: The USS was not able to successfully authorize or update the flight plan due to a problem with the USS or a downstream system.
 
           - `NotSupported`: The USS's implementation does not support the attempted interaction.  For instance, if the request specified a high-priority flight and the USS does not support management of high-priority flights.
-      enum: [Planned, ReadyToFly, OffNominal, Rejected, Failed, NotSupported]
-      example: Planned
+      enum: [Completed, Rejected, Failed, NotSupported]
+      example: Completed
 
     FlightPlanStatus:
       type: string
@@ -187,7 +187,7 @@ components:
           - `OffNominal`: The flight plan now reflects the operator's actions, but the flight plan is not in a nominal state (e.g., the USS has placed the ASTM F3548-21 operational intent into one of the Nonconforming or Contingent states).
 
           - `Closed`: The flight plan was closed successfully by the USS and is now out of the UTM system.
-      enum: [Planned, ReadyToFly, OffNominal, Rejected, Failed, NotSupported]
+      enum: [NotPlanned, Planned, ReadyToFly, OffNominal, Closed]
       example: Planned
 
     AdvisoryInclusion:
