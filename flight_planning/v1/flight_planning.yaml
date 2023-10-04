@@ -134,7 +134,7 @@ components:
             - Contingent
         area:
           description: >-
-            User nominally intends to or may fly anywhere in this entire area.
+            User intends to or may fly anywhere in this entire area.
           type: array
           items:
             $ref: './geotemporal.yaml#/components/schemas/Volume4D'
