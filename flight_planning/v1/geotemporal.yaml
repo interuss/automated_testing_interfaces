@@ -1,10 +1,8 @@
-openapi: 3.0.2
 info:
   title: >-
     Geotemporal definitions used in flight planning interface.
     
     Note that these data structures are designed to align with data structures from ASTM F3548-21.
-  version: 0.0.1
 components:
   schemas:
     Time:

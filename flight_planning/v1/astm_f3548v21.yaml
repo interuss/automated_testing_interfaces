@@ -1,7 +1,5 @@
-openapi: 3.0.2
 info:
   title: Definitions used in flight planning interface specific to ASTM F3548-21.
-  version: 0.0.1
 components:
   schemas:
     ASTMF354821OpIntentInformation:
