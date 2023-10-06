@@ -140,18 +140,36 @@ components:
             $ref: './geotemporal.yaml#/components/schemas/Volume4D'
           default: []
 
+    ExecutionStyle:
+      type: string
+      description: >-
+        The style of execution of a specified flight planning action that the operator would like the USS to perform.
+        
+          - `Hypothetical`: The user does not want the USS to actually perform any action regarding the actual flight plan.  Instead, the user would like to know the likely outcome if the action were hypothetically attempted.  The response to this request will not refer to an actual flight plan, or an actual state change in an existing flight plan, but rather a hypothetical flight plan or a hypothetical change to an existing flight plan.
+        
+          - `IfAllowed`: The user would like to perform the requested action if it is allowed.  If the requested action is allowed, the USS should actually perform the action (e.g., actually create a new ASTM F3548-21 operational intent).  If the requested action is not allowed, the USS should indicate that the action is Rejected and not perform the action.  The response to this request will refer to an actual flight plan when appropriate, and never refer to a hypothetical flight plan or status.
+
+          - `InReality`: The user is communicating an actual state of reality.  The USS should consider the user to be actually performing (or attempting to perform) this action, regardless of whether or not the action is allowed under relevant UTM rules.
+      enum: [Hypothetical, IfAllowed, InReality]
+      example: IfAllowed
+
     UpsertFlightPlanRequest:
       description: >-
-        Client request to emulate a user performing a flight planning action.  Note that the USS should consider the
-        user to be actually performing (or attempting to perform) this action, and should not consider the user to be
-        merely exploring the possibility of performing the action, or merely requesting to perform the action.
+        Client request to emulate a user performing a flight planning action.
       type: object
       required:
         - flight_plan
+        - execution_style
         - request_id
       properties:
         flight_plan:
-          $ref: '#/components/schemas/FlightPlan'
+          description: Complete new or updated information about the flight describing the flight planning action to be taken.
+          anyOf:
+            - $ref: '#/components/schemas/FlightPlan'
+        execution_style:
+          description: Style of execution for the requested flight planning action.
+          anyOf:
+            - $ref: '#/components/schemas/ExecutionStyle'
         request_id:
           type: string
           description: >-
