@@ -96,8 +96,8 @@ components:
 
     BasicFlightPlanInformation:
       description: >-
-        Basic information about a flight plan that an operator and/or UAS can be expected to provide in most flight
-        planning scenarios.
+        Basic information about a flight plan that a user and/or UAS can be expected to provide in most flight planning
+        scenarios.
       type: object
       required:
         - usage_state
@@ -134,7 +134,7 @@ components:
             - Contingent
         area:
           description: >-
-            User intends to or may fly anywhere in this entire area.
+            The complete area in which the user intends to fly, or may fly, as known by the user.  The user intends to fly, or may fly, anywhere in this entire area.
           type: array
           items:
             $ref: './geotemporal.yaml#/components/schemas/Volume4D'
@@ -182,9 +182,9 @@ components:
 
           - `Planned`: The USS has created an authorized flight plan for the user, but the user may not yet start flying (even if within the time bounds of the flight plan).
 
-          - `ReadyToFly`: The flight plan is ready for the operator to nominally fly within the bounds (including time) of the flight plan.
+          - `ReadyToFly`: The flight plan is ready for the user to nominally fly within the bounds (including time) of the flight plan.
 
-          - `OffNominal`: The flight plan now reflects the operator's actions, but the flight plan is not in a nominal state (e.g., the USS has placed the ASTM F3548-21 operational intent into one of the Nonconforming or Contingent states).
+          - `OffNominal`: The flight plan now reflects the user's actions, but the flight plan is not in a nominal state (e.g., the USS has placed the ASTM F3548-21 operational intent into one of the Nonconforming or Contingent states).
 
           - `Closed`: The flight plan was closed successfully by the USS and is now out of the UTM system.
       enum: [NotPlanned, Planned, ReadyToFly, OffNominal, Closed]
@@ -405,7 +405,7 @@ paths:
       summary: Upsert flight plan
       operationId: UpsertFlightPlan
       description: >-
-        This endpoint simulates an operator intention to submit a new or updated flight plan.
+        This endpoint simulates a user intention to submit a new or updated flight plan.
 
     delete:
       security:
@@ -429,4 +429,4 @@ paths:
       summary: Close flight plan
       operationId: DeleteFlightPlan
       description: >-
-        This endpoint simulates the operator intention to cancel, end, or close a flight plan.
+        This endpoint simulates a user intention to cancel, end, or close a flight plan.
