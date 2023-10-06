@@ -182,12 +182,12 @@ components:
 
           - `Planned`: The USS has created an authorized flight plan for the user, but the user may not yet start flying (even if within the time bounds of the flight plan).
 
-          - `ReadyToFly`: The flight plan is ready for the user to nominally fly within the bounds (including time) of the flight plan.
+          - `OkToFly`: The flight plan is in a state such that it is ok for the user to nominally fly within the bounds (including time) of the flight plan.
 
           - `OffNominal`: The flight plan now reflects the user's actions, but the flight plan is not in a nominal state (e.g., the USS has placed the ASTM F3548-21 operational intent into one of the Nonconforming or Contingent states).
 
           - `Closed`: The flight plan was closed successfully by the USS and is now out of the UTM system.
-      enum: [NotPlanned, Planned, ReadyToFly, OffNominal, Closed]
+      enum: [NotPlanned, Planned, OkToFly, OffNominal, Closed]
       example: Planned
 
     AdvisoryInclusion:
