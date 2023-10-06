@@ -147,7 +147,7 @@ components:
         merely exploring the possibility of performing the action, or merely requesting to perform the action.
       type: object
       required:
-        - flight
+        - flight_plan
         - request_id
       properties:
         flight_plan:
