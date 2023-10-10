@@ -1,0 +1,16 @@
+info:
+  title: Definitions used in flight planning interface specific to ASTM F3548-21.
+components:
+  schemas:
+    ASTMF354821OpIntentInformation:
+      description: >-
+        Information provided about a flight plan that is necessary for ASTM F3548-21.
+      type: object
+      properties:
+        priority:
+          $ref: '#/components/schemas/Priority'
+    Priority:
+      description: >-
+        Ordinal priority of the operational intent, as defined in ASTM F3548-21.
+      type: integer
+      default: 0
