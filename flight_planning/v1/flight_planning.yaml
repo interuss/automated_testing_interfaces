@@ -111,10 +111,13 @@ components:
               area with an active UAS.
             
             `InUse`: The user is currently using the defined area with an active UAS.
+            
+            `Closed`: The user is no longer using, or planning to use, the flight plan.
           type: string
           enum:
             - Planned
             - InUse
+            - Closed
         uas_state:
           description: >-
             State of the user's UAS associated with this flight plan.
@@ -127,14 +130,24 @@ components:
             
               - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
                 to recover to normal operation.
+            
+              - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
+                planned in the future and the UAS that will be flying has not yet connected to the system).
           type: string
           enum:
             - Nominal
             - OffNominal
             - Contingent
+            - NotSpecified
         area:
           description: >-
-            The complete area in which the user intends to fly, or may fly, as known by the user.  The user intends to fly, or may fly, anywhere in this entire area.
+            The complete area in which the user intends to fly, or may fly, as known by the user.  The user intends to
+            fly, or may fly, anywhere in this entire area.
+            
+            This means, for instance, that an ASTM F3548-21 operational intent supporting this flight must have volumes
+            that are a superset of this area.  If the operational intent did not cover this entire area, then all of the
+            intended flight would not be covered by the operational intent (for at least part of the flight, the
+            operator intends to fly outside the operational intent).
           type: array
           items:
             $ref: './geotemporal.yaml#/components/schemas/Volume4D'
@@ -428,7 +441,7 @@ paths:
     delete:
       security:
         - Authority:
-            - interuss.flight_planning.plan
+            - interuss.flight_planning.direct_automated_test
 
       responses:
         '200':
@@ -436,7 +449,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteFlightPlanResponse'
-          description: Flight plan was closed successfully
+          description: Flight plan was deleted successfully
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
@@ -447,4 +460,4 @@ paths:
       summary: Close flight plan
       operationId: DeleteFlightPlan
       description: >-
-        This endpoint simulates a user intention to cancel, end, or close a flight plan.
+        This endpoint allows the test director to instruct the USS to remove a flight plan that is no longer needed for testing.
