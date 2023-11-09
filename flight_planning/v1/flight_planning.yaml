@@ -69,9 +69,9 @@ components:
           example: Flight Planning Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.3.0" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.4.0" when implementing this version of the API.
           type: string
-          example: v0.3.0
+          example: v0.4.0
 
     FlightPlan:
       description: >-
