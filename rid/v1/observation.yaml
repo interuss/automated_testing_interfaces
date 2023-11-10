@@ -187,6 +187,8 @@ components:
           $ref: 'commons.yaml#/components/schemas/Longitude'
         alt:
           $ref: 'commons.yaml#/components/schemas/Altitude'
+        msl_alt:
+          $ref: 'commons.yaml#/components/schemas/MSLAltitude'
         height:
           $ref: 'commons.yaml#/components/schemas/RIDHeight'
     Path:
