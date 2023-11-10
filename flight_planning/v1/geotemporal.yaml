@@ -65,11 +65,12 @@ components:
         reference:
           description: >-
             A code indicating the reference for a vertical distance. See AIXM
-            5.1 and FIXM 4.2.0.
+            5.1 and FIXM 4.2.0 for W84 and SFC.
           type: string
           enum:
             - W84
             - SFC
+            - Takeoff
         units:
           description: >-
             The reference quantities used to express the value of altitude. See
