@@ -9,6 +9,24 @@ components:
       description: An altitude, in meters, above the WGS84 ellipsoid.
       type: number
       example: 1321.2
+    AltitudeReference:
+      type: string
+      enum:
+        - W84
+        - EGM96
+        - EGM2008
+        - Other
+    MSLAltitude:
+      type: object
+      properties:
+        meters:
+          description: Height, in meters, above a mean sea level datum.
+          type: number
+          format: float
+          example: 103
+          default: 0
+        reference_datum:
+          $ref: '#/components/schemas/AltitudeReference'
     Latitude:
       format: double
       description: Degrees of latitude north of the equator, with reference to the
