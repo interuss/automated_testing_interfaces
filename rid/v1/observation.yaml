@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Display Data Observation
-  version: 0.0.2
+  version: 0.1.0
   description: >-
     This interface is implemented by every Display Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to obtain current remote ID information from the perspective of the Display Provider.
@@ -187,6 +187,8 @@ components:
           $ref: 'commons.yaml#/components/schemas/Longitude'
         alt:
           $ref: 'commons.yaml#/components/schemas/Altitude'
+        msl_alt:
+          $ref: 'commons.yaml#/components/schemas/MSLAltitude'
         height:
           $ref: 'commons.yaml#/components/schemas/RIDHeight'
     Path:
