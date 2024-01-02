@@ -34,9 +34,9 @@ components:
             Declaration of timestamp accuracy, which is the one-sided width of the 95%-confidence interval around `timestamp` for the true time of applicability for any of the data fields.
           type: number
           format: float
-          minimum: 0
-          example: 1
-          default: 0
+          minimum: 0.0
+          example: 1.0
+          default: 0.0
         position:
           $ref: '#/components/schemas/AircraftPosition'
         operational_status:
@@ -47,17 +47,17 @@ components:
             360 indicates that the true value is unavailable.
           type: number
           format: float
-          maximum: 360
-          minimum: 0
-          example: 295
-          default: 0
+          maximum: 360.0
+          minimum: 0.0
+          example: 295.0
+          default: 0.0
         speed:
           description: Ground speed of flight in meters per second.
           type: number
           format: float
-          minimum: 0
+          minimum: 0.0
           example: 1.9
-          default: 0
+          default: 0.0
         speed_accuracy:
           description: Accuracy of horizontal ground speed.
           anyOf:
@@ -67,7 +67,7 @@ components:
           type: number
           format: float
           example: -0.2
-          default: 0
+          default: 0.0
     OperationalStatus:
       description: >-
         Indicates operational status of associated aircraft.
@@ -117,8 +117,8 @@ components:
             deltas" between aircraft.  This value is provided in meters.
           type: number
           format: float
-          example: 1500
-          default: 0
+          example: 1500.0
+          default: 0.0
     HorizontalAccuracy:
       description: |-
         This is the NACp enumeration from ADS-B, plus 1m for a more complete range for UAs.
