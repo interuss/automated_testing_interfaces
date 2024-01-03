@@ -83,6 +83,12 @@ components:
         basic_information:
           $ref: '#/components/schemas/BasicFlightPlanInformation'
         telemetry:
+          description: |-
+            Telemetry for the flight (see FlightTelemetry definition).
+            
+            If/when the associated flight is canceled or closed, any telemetry not yet delivered to the system should be dequeued and discarded.
+            
+            When a FlightPlan is modified, queued telemetry should be overridden by the modification.  So, if a FlightPlan that previously contained telemetry has a modification that specifies no telemetry, all queued-but-not-sent AircraftStates should be dequeued and discarded.  If a FlightPlan modification does not contain the `id`s of one or more previously-specified AircraftStates for the associated flight, those AircraftStates should be dequeued and discarded.  If a FlightPlan modification contains additional `id`s not previously present, those AircraftStates should be enqueued for delivery.  If a FlightPlan modification changes the data of a queued AircraftState with a particular ID, the data of that queued AircraftState should be changed to match the modification.  Any attempt to created, modify, or delete an already-sent AircraftState, or an AircraftState that should have already been sent, is an invalid request.
           $ref: './telemetry.yaml#/components/schemas/FlightTelemetry'
         astm_f3548_21:
           $ref: './astm_f3548v21.yaml#/components/schemas/ASTMF354821OpIntentInformation'
@@ -122,25 +128,11 @@ components:
             - Closed
         uas_state:
           description: >-
-            State of the user's UAS associated with this flight plan.
-            
-              - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
-                `OffNominal` or `Contingent`.
-            
-              - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
-                may expect to be able to recover to normal operation.
-            
-              - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
-                to recover to normal operation.
-            
-              - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
-                planned in the future and the UAS that will be flying has not yet connected to the system).
-          type: string
-          enum:
-            - Nominal
-            - OffNominal
-            - Contingent
-            - NotSpecified
+            State of the user's UAS associated with this flight plan as reported by the operator.  If the UAS reports
+            its own state, that report will be reflected in telemetry.  If the operator reports the UAS state, that
+            report will be reflected here.
+          anyOf:
+            - $ref: './telemetry.yaml#/components/schemas/FunctionalState'
         area:
           description: >-
             The complete area in which the user intends to fly, or may fly, as known by the user.  The user intends to

@@ -5,7 +5,7 @@ components:
   schemas:
     FlightTelemetry:
       description: >-
-        When this information is present and the USS supports telemetry ingestion for a flight, the USS receiving this information should enqueue these telemetry reports to be delivered to the system, as if they were coming from the user, at (or soon after) the specified times.  If/when the associated flight is canceled or closed, any telemetry not yet delivered to the system should be dequeued and discarded.
+        When this information is present and the USS supports telemetry ingestion for a flight, the USS receiving this information should enqueue these telemetry reports to be delivered to the system, as if they were coming from the user, at (or soon after) the specified times.
       type: object
       properties:
         states:
@@ -14,10 +14,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AircraftState'
+          default: []
     AircraftState:
       description: State of an aircraft for the purposes of simulating the execution of a flight plan.
       required:
-        - timestamp
+        - id
       type: object
       properties:
         id:
@@ -27,6 +28,8 @@ components:
         timestamp:
           description: >-
             Time at which this state is valid.  This is equivalent to the time of sensor measurement, so the USS's primary system under test should not be aware of this state until after this time.
+            
+            If this field is omitted, the AircraftState with the specified `id` is to be considered unchanged from the previous definition.  If this field is omitted and there was no previous definition of an AircraftState with `id` associated with this flight, the request is invalid.
           anyOf:
             - $ref: 'geotemporal.yaml#/components/schemas/Time'
         timestamp_accuracy:
@@ -41,6 +44,13 @@ components:
           $ref: '#/components/schemas/AircraftPosition'
         operational_status:
           $ref: '#/components/schemas/OperationalStatus'
+        uas_state:
+          description: >-
+            State of the user's UAS associated with this flight plan as reported by the operator.  If the UAS reports
+            its own state, that report will be reflected here.  If the operator reports the UAS state, that report will
+            be reflected in the BasicFlightPlanInformation.
+          anyOf:
+            - $ref: './telemetry.yaml#/components/schemas/FunctionalState'
         track:
           description: Direction of flight expressed as a "True North-based" ground
             track angle.  This value is provided in degrees East of North.  A value of
@@ -218,3 +228,24 @@ components:
         - SA1mps
         - SA03mps
       type: string
+    FunctionalState:
+      description: |-
+        Functional state of the user's UAS associated with this flight plan.
+
+          - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
+            `OffNominal` or `Contingent`.
+
+          - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
+            may expect to be able to recover to normal operation.
+
+          - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
+            to recover to normal operation.
+
+          - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
+            planned in the future and the UAS that will be flying has not yet connected to the system).
+      type: string
+      enum:
+        - Nominal
+        - OffNominal
+        - Contingent
+        - NotSpecified
