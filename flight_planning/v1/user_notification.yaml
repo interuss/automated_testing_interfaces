@@ -1,0 +1,61 @@
+info:
+  title: Definitions used in flight planning interface for user notification.
+components:
+  schemas:
+    ConflictDetails:
+      type: object
+      required:
+        - conflict_type
+        - conflicting_id
+        - intersecting_area
+      properties:
+        conflict_type:
+          type: string
+          description: Conflicting entity type.
+          enum:
+            - Operation
+            - Constraint
+          example: IntersectingOperation
+        intersecting_area:
+          description: >-
+            The area of the conflicting entity. For operational intent it will include both nominal and off-nominal volumes.
+          type: array
+          items: $ref ./geotemporal.yaml#/components/schemas/Volume4D
+        conflicting_id:
+          description: This is the id of the conflicting entity.
+          maxLength: 36
+          minLength: 36
+          type: string
+          format: uuid
+          pattern: >-
+            ^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-4[0-9a-fA-F]{3}\\-[8-b][0-9a-fA-F]{3}\\-[0-9a-fA-F]{12}$
+          example: 03e5572a-f733-49af-bc14-8a18bd53ee39
+        conflicting_priority:
+          $ref: './astm_f3548v21.yaml#/components/schemas/Priority'
+          description: This value is populated when conflict_type is Operation.
+        conflicting_uas_state:
+          $ref: './astm_f3548v21.yaml#/components/schemas/OperationalIntentState'
+          description: This value is populated when conflict_type is Operation.
+        time_conflict_detected:
+          anyOf:
+            - $ref: '#/components/schemas/Time'
+          description: This is the time USS identifies the conflict of an entity with an existing flight plan that it manages.
+
+
+    ConflictNotification:
+      type: object
+      description: Notification of conflict with new/modified operations or constraints.
+      required:
+        - time_user_notified
+        - conflict_details
+      properties:
+        time_user_notified:
+          anyOf:
+            - $ref: '#/components/schemas/Time'
+          description: Time at which the user was notified
+        conflict_details:
+          anyOf:
+            - $ref: '#/components/schemas/ConflictDetails'
+          description: >-
+            Description of information that was provided to the user, as per the
+            referenced notification_triggering_event requirement
