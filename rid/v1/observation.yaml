@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Display Data Observation
-  version: 0.1.0
+  version: 0.1.1
   description: >-
     This interface is implemented by every Display Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to obtain current remote ID information from the perspective of the Display Provider.
@@ -213,6 +213,19 @@ components:
       description: |-
         Authorization from, or on behalf of, an authorization authority, matching standard remote ID authorization.
 
+        This authority will issue access tokens that are JSON Web Tokens as defined in RFC 7519, using the `RS256` algorithm for the signature, and publish to all providers the public key for verifying that signature.
+
+        The following fields must be included in the JWT claim for access tokens issued by this authority:
+
+        * `exp`, with a time no further than 1 hour in the future.
+
+        * `sub`, with unique ID of the client requesting the access token.
+
+        * `scope`, with a string composed of a space-separated list of strings indicating the scopes granted, per RFC 6749.
+
+        * `aud`, with the fully qualified domain name of the URL the access token will be used to access.  For example, if a USS were querying the endpoint at https://uss.example.com:8888/rid_observation/display_data/a1711ef3-2373-4ea2-bbbc-f92f57285406, the access token included in the request should specify `"aud": "uss.example.com"`.
+
+        Clients must provide these access tokens in an `Authorization` header in the form `Bearer <token>` in accordance with RFC 6750.
 security:
   - RIDAuth:
       - dss.read.identification_service_areas

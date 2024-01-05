@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Strategic Coordination Test Data Injection
-  version: 0.2.0
+  version: 0.2.1
   description: >-
     This interface is implemented by every USS wishing to enable the automated testing framework to interact with the
     USS as a user planning flights.  This interaction capability is required by some automated tests.
@@ -18,6 +18,20 @@ components:
               Client may inject test data into a USS for the purpose of conducting automated tests.
       description: |-
         Authorization from, or on behalf of, an authorization authority, augmenting standard scd authorization for the purpose of automated testing.
+
+        This authority will issue access tokens that are JSON Web Tokens as defined in RFC 7519, using the `RS256` algorithm for the signature, and publish to all providers the public key for verifying that signature.
+
+        The following fields must be included in the JWT claim for access tokens issued by this authority:
+
+        * `exp`, with a time no further than 1 hour in the future.
+
+        * `sub`, with unique ID of the client requesting the access token.
+
+        * `scope`, with a string composed of a space-separated list of strings indicating the scopes granted, per RFC 6749.
+
+        * `aud`, with the fully qualified domain name of the URL the access token will be used to access.  For example, if a USS were querying the endpoint at https://uss.example.com:8888/scd_injection/v1/flights/5a312fa5-4f63-444c-8919-21d7593a51bf, the access token included in the request should specify `"aud": "uss.example.com"`.
+
+        Clients must provide these access tokens in an `Authorization` header in the form `Bearer <token>` in accordance with RFC 6750.
 
   schemas:
     StatusResponse:
