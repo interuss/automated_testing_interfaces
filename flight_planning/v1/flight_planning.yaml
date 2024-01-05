@@ -371,45 +371,6 @@ paths:
       description: Get the status of the USS automated testing interface.
       operationId: GetStatus
 
-  /user_notifications/conflicts/{flight_plan_id}:
-    get:
-      security:
-        - Authority:
-            - interuss.flight_planning.direct_automated_test
-      parameters:
-        - name: flight_plan_id
-          description: Id of the user's flight plan.
-          schema:
-            $ref: '#/components/schemas/FlightPlanID'
-          in: path
-          required: true
-        - name: after
-          description: >-
-            This paramter is used to filter the notifications. Notifications sent after this time are returned.
-            If this parameter is not provided then all the notification for a flight_plan _id are returned.
-          schema:
-            anyOf:
-              - $ref: '#/components/schemas/Time'
-          in: query
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: './user_notification.yaml#/components/schemas/ConflictNotification'
-        '401':
-          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
-        '403':
-          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
-        '404':
-          description: No flight plan with flight_plan_id exists.
-      summary: User notification of conflicts
-      description: >-
-        This endpoint returns the user notifications about conflicts with other operations or constraints, for a flight plan.
-        The implementation of this endpoint will require that the notifications are stored for a flight_plan till the plan is closed.
-
   /clear_area_requests:
     post:
       security:
@@ -501,3 +462,42 @@ paths:
       operationId: DeleteFlightPlan
       description: >-
         This endpoint allows the test director to instruct the USS to remove a flight plan that is no longer needed for testing.
+
+  /user_notifications/conflicts/{flight_plan_id}:
+    get:
+      security:
+        - Authority:
+            - interuss.flight_planning.direct_automated_test
+      parameters:
+        - name: flight_plan_id
+          description: Id of the user's flight plan.
+          schema:
+            $ref: '#/components/schemas/FlightPlanID'
+          in: path
+          required: true
+        - name: after
+          description: >-
+            This paramter is used to filter the notifications. Notifications sent after this time are returned.
+            If this parameter is not provided then all the notification for a flight_plan _id are returned.
+          schema:
+            anyOf:
+              - $ref: '#/components/schemas/Time'
+          in: query
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './user_notification.yaml#/components/schemas/ConflictNotification'
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+        '404':
+          description: No flight plan with flight_plan_id exists.
+      summary: User notification of conflicts
+      description: >-
+        This endpoint returns the user notifications about conflicts with other operations or constraints, for a flight plan.
+        The implementation of this endpoint will require that the notifications are stored for a flight_plan till the plan is closed.
