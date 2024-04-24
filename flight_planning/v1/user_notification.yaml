@@ -2,28 +2,54 @@ info:
   title: Definitions used in flight planning interface for user notification.
 components:
   schemas:
-    ConflictDetails:
+    ConflictNotification:
       type: object
+      description: Notification of conflict with new/modified operations or intersection with constraints.
       required:
-        - conflict_type
-        - conflicting_id
-        - intersecting_area
+        - intersection_detected_at
+        - notification_sent_at
+        - impacted_flight_id
       properties:
-        conflict_type:
-          type: string
-          description: Conflicting entity type.
-          enum:
-            - Operation
-            - Constraint
-          example: IntersectingOperation
-        intersecting_area:
+        intersection_detected_at:
+          anyOf:
+            - $ref: './geotemporal.yaml#/components/schemas/Time'
           description: >-
-            The area of the conflicting entity. For operational intent it will include both nominal and off-nominal volumes.
+            Time at which the intersection with other operational_intents was detected by USS.
+            For the purpose of tests, the value of intersection_detected_at is described below for two scenarios.
+             - USS managing flights for a user, maintains awareness of any new or modified operational intents.
+            Upon successfully receiving any notification of a new or modified operation the USS responds with status 204 to the notifying USS, 
+            and also checks for any intersections detected. The time the USS responds with 204 will be taken as the value of intersection_detected_at.
+             - USS checks for intersections with existing operational intents or constraints while creating or modifying a flight for an UpsertFlightPlan request.
+            When successful, the USS responds back with 200 status and a planning result as Completed. 
+            The time USS responds with 200 will be taken as the value of intersection_detected_at.
+        notification_sent_at:
+          anyOf:
+            - $ref: './geotemporal.yaml#/components/schemas/Time'
+          description: Time at which the user or user's automated system was sent user notification about the conflict or intersection.
+        impacted_flight_id:
+          description: Flight_id of the user flight that is impacted by the conflict.
           type: array
           items:
-            $ref: './geotemporal.yaml#/components/schemas/Volume4D'
-        conflicting_id:
-          description: This is the id of the conflicting entity.
+            type: string
+            format: uuid
+            maxLength: 36
+            minLength: 36
+            pattern: >-
+              ^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-4[0-9a-fA-F]{3}\\-[8-b][0-9a-fA-F]{3}\\-[0-9a-fA-F]{12}$
+        conflicts_count:
+          description: >-  
+            Number of conflicting operational intents reported by the notification.
+            If the user notification is triggered as a result of creating or modifying a flight, the conflicts_count
+            can have value greater than 1, depending on number of conflicting operations detected.
+            If the user notification is triggered by receipt of notification of a new or modified
+            operational intent from another USS, the conflicts_count value is 1.                        
+            If not provided, the default value is 0, which would mean there are only constraints intersecting
+          type: integer
+          minimum: 0
+        conflict_entity_ids:
+          description: >-
+            These are the ids of the conflicting entities. This field is kept optional as some USSes might not share
+            conflict entity ids like operation entity id or constraint id.
           maxLength: 36
           minLength: 36
           type: string
@@ -31,32 +57,10 @@ components:
           pattern: >-
             ^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-4[0-9a-fA-F]{3}\\-[8-b][0-9a-fA-F]{3}\\-[0-9a-fA-F]{12}$
           example: 03e5572a-f733-49af-bc14-8a18bd53ee39
-        conflicting_priority:
-          $ref: './astm_f3548v21.yaml#/components/schemas/Priority'
-          description: This value is populated when conflict_type is Operation.
-        conflicting_uas_state:
-          $ref: './astm_f3548v21.yaml#/components/schemas/OperationalIntentState'
-          description: This value is populated when conflict_type is Operation.
-        time_conflict_detected:
-          anyOf:
-            - $ref: '#/components/schemas/Time'
-          description: This is the time USS identifies the conflict of an entity with an existing flight plan that it manages.
-
-
-    ConflictNotification:
-      type: object
-      description: Notification of conflict with new/modified operations or constraints.
-      required:
-        - time_user_notified
-        - conflict_details
-      properties:
-        time_user_notified:
-          anyOf:
-            - $ref: '#/components/schemas/Time'
-          description: Time at which the user was notified
-        conflict_details:
-          anyOf:
-            - $ref: '#/components/schemas/ConflictDetails'
+        constraints:
           description: >-
-            Description of information that was provided to the user, as per the
-            referenced notification_triggering_event requirement
+            List of constraints that intersect with a flight. 
+            It would contain one constraint when triggered by notification of a constraint from another USS.
+            It could contain multiple constraints when triggered by creation or modification of a flight.
+          type: array
+          items: object
