@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Flight Planning Automated Testing Interface
-  version: 0.4.0
+  version: 0.4.1
   description: >-
     This interface is implemented by a USS wishing to participate in automated tests involving attempts to plan flights.
     
@@ -34,6 +34,20 @@ components:
               flight plan.
       description: |-
         Authorization from, or on behalf of, an authorization authority, augmenting standard strategic conflict detection or other similar authorization for the purpose of automated testing.
+        
+        This authority will issue access tokens that are JSON Web Tokens as defined in RFC 7519, using the `RS256` algorithm for the signature, and publish to all providers the public key for verifying that signature.
+
+        The following fields must be included in the JWT claim for access tokens issued by this authority:
+
+        * `exp`, with a time no further than 1 hour in the future.
+
+        * `sub`, with unique ID of the client requesting the access token.
+
+        * `scope`, with a string composed of a space-separated list of strings indicating the scopes granted, per RFC 6749.
+
+        * `aud`, with the fully qualified domain name of the URL the access token will be used to access.  For example, if a USS were querying the endpoint at https://uss.example.com:8888/flight_planning/v1/flight_plans/db41f454-b255-470e-98d6-4c5096a295a1, the access token included in the request should specify `"aud": "uss.example.com"`.
+
+        Clients must provide these access tokens in an `Authorization` header in the form `Bearer <token>` in accordance with RFC 6750.
 
   schemas:
     FlightPlanID:
