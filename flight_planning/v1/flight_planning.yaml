@@ -485,7 +485,7 @@ paths:
       parameters:
         - name: from
           description: >- 
-            Parameter to filter the user notifications sent after the specified time. 
+            Parameter for filtering the user notifications sent after the specified time. 
             The property 'notification_sent_at' in ConflictNotification is to be used for comparison.
           schema:
             type: string
@@ -496,7 +496,7 @@ paths:
         - name: to
           required: false
           description: >-
-            Parameter to filter the user notifications sent till the specified time. 
+            Parameter for filtering the user notifications sent till the specified time. 
             If not provided, then the value defaults to now.
           schema:
             type: string
@@ -505,21 +505,21 @@ paths:
           in: query
       responses:
         '200':
-          description: Returns a list of user notifications sent in the time interval specified by the query parameters.
+          description: Returns a list of user notifications about conflicts, sent in the time interval specified by the query parameters.
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: './user_notification.yaml#/components/schemas/ConflictNotification'
+        '400':
+          Query parameter 'from' missing in the request.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
-        '404':
-          description: No flight plan with flight_plan_id exists.
-      summary: User notification for conflicts
+      summary: User notifications for conflicts
       description: >-
-        Returns the list of user notifications about conflicts, sent by USS in the time interval specified by query parameters. 
+        Returns the list of user notifications, sent by USS, about conflicts in the time interval specified by query parameters. 
         The list is in descending order by the property 'notification_sent_at' in ConflictNotification. 
-        The implementation of this endpoint will require that the notifications be available for querying for a flight_plan till the plan is closed.
+        The implementation of this endpoint will require that the user notifications be available for querying for a flight_plan till the flight plan is closed.
