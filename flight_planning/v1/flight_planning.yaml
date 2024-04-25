@@ -505,15 +505,15 @@ paths:
           in: query
       responses:
         '200':
-          description: Returns a list of user notifications about conflicts, sent in the time interval specified by the query parameters.
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: './user_notification.yaml#/components/schemas/ConflictNotification'
+          description: Notifications sent to the user were retrieved successfully.
         '400':
-          Query parameter 'from' missing in the request.
+          description: Query parameter 'from' missing in the request.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
