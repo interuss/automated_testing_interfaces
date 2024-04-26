@@ -360,7 +360,6 @@ components:
         outcome:
           $ref: '#/components/schemas/ClearAreaOutcome'
 
-
 paths:
   /status:
     get:
@@ -485,7 +484,7 @@ paths:
       parameters:
         - name: from
           description: >- 
-            Parameter for filtering the user notifications sent after the specified time. 
+            Parameter for filtering the user notifications sent at or after the specified time (inclusive). 
             The property 'notification_sent_at' in ConflictNotification is to be used for comparison.
           schema:
             type: string
@@ -494,15 +493,17 @@ paths:
           in: query
           required: true
         - name: to
-          required: false
           description: >-
-            Parameter for filtering the user notifications sent till the specified time. 
-            If not provided, then the value defaults to now.
+            Parameter for filtering the user notifications sent till the specified time (inclusive). 
+            This time should be after the time specified in 'to' parameter. 
+            If not provided, then the value defaults to now. 
+            The property 'notification_sent_at' in ConflictNotification is to be used for comparison.
           schema:
             type: string
             format: date-time
           example: '2024-04-22T16:41:50.52Z'
           in: query
+          required: false
       responses:
         '200':
           content:
@@ -520,6 +521,7 @@ paths:
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
       summary: User notifications for conflicts
       description: >-
-        Returns the list of user notifications, sent by USS, about conflicts in the time interval specified by query parameters. 
+        Returns the list of user notifications, sent by USS, about conflicts in the time interval specified by the query parameters. 
         The list is in descending order by the property 'notification_sent_at' in ConflictNotification. 
         The implementation of this endpoint will require that the user notifications be available for querying for a flight_plan till the flight plan is closed.
+        The user notifications should be available to be queried within 5 seconds of notifying the user.
