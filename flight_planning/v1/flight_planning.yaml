@@ -523,5 +523,5 @@ paths:
       description: >-
         Returns the list of user notifications, sent by USS, about conflicts in the time interval specified by the query parameters. 
         The list is in descending order by the property 'notification_sent_at' in ConflictNotification. 
-        The implementation of this endpoint will require that the user notifications be available for querying for a flight_plan till the flight plan is closed.
+        The implementation of this endpoint will require that the user notifications be available for querying for a flight_plan till the end of a test run.
         The user notifications should be available to be queried within 5 seconds of notifying the user.
