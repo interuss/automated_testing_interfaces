@@ -476,7 +476,7 @@ paths:
       description: >-
         This endpoint allows the test director to instruct the USS to remove a flight plan that is no longer needed for testing.
 
-  /user_notifications/conflicts:
+  /user_notifications:
     get:
       security:
         - Authority:
