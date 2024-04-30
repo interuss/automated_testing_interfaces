@@ -2,16 +2,16 @@ info:
   title: Definitions used in flight planning interface for user notification.
 components:
   schemas:
-    ConflictNotification:
+    UserNotification:
       type: object
-      description: Notification of conflict with new/modified operations.
+      description: Notification sent to user.
       required:
         - notification_sent_at
       properties:
         notification_sent_at:
           anyOf:
             - $ref: './geotemporal.yaml#/components/schemas/Time'
-          description: Time at which the user or user's automated system was sent user notification about the conflict or intersection.
+          description: Time at which the user or user's automated system was sent a notification.
         conflicts_count:
           description: >-  
             Number of conflicting operational intents reported by the notification.                       
