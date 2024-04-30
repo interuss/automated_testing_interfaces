@@ -519,7 +519,7 @@ paths:
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
-      summary: User notifications for conflicts
+      summary: User notifications
       description: >-
         Returns the list of user notifications, sent by USS, about conflicts in the time interval specified by the query parameters. 
         The list is in descending order by the property 'notification_sent_at' in ConflictNotification. 
