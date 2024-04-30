@@ -485,7 +485,7 @@ paths:
         - name: from
           description: >- 
             Parameter for filtering the user notifications sent at or after the specified time (inclusive). 
-            The property 'notification_sent_at' in ConflictNotification is to be used for comparison.
+            The property 'notification_sent_at' in UserNotification is to be used for comparison.
           schema:
             type: string
             format: date-time
@@ -497,7 +497,7 @@ paths:
             Parameter for filtering the user notifications sent till the specified time (inclusive). 
             This time should be after the time specified in 'to' parameter. 
             If not provided, then the value defaults to now. 
-            The property 'notification_sent_at' in ConflictNotification is to be used for comparison.
+            The property 'notification_sent_at' in UserNotification is to be used for comparison.
           schema:
             type: string
             format: date-time
@@ -511,7 +511,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: './user_notification.yaml#/components/schemas/ConflictNotification'
+                  $ref: './user_notification.yaml#/components/schemas/UserNotification'
           description: Notifications sent to the user were retrieved successfully.
         '400':
           description: Query parameter 'from' missing in the request.
