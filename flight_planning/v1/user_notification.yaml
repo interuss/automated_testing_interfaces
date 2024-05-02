@@ -7,11 +7,25 @@ components:
       description: Notification sent to user.
       required:
         - notification_sent_at
+        - conflict_status
       properties:
         notification_sent_at:
           anyOf:
             - $ref: './geotemporal.yaml#/components/schemas/Time'
           description: Time at which the user or user's automated system was sent a notification.
+        conflict_status:
+          description: >-
+            Conflict status as notified by USS to the user.            
+             - `DONT_KNOW`: USS doesn't know or doesn't notify how may conflicts occurred.
+             - `NONE`: USS found no conflict.
+             - `SINGLE`: USS found one conflict.
+             - `MULTIPLE`: USS found multiple conflicts.
+          type: string
+          enum:
+            - DONT_KNOW
+            - NONE
+            - SINGLE
+            - MULTIPE
         conflicts_count:
           description: >-  
             Number of conflicting operational intents reported by the notification.                       
