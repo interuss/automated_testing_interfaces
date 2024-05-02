@@ -359,6 +359,17 @@ components:
       properties:
         outcome:
           $ref: '#/components/schemas/ClearAreaOutcome'
+    QueryUserNotificationsResponse:
+      type: object
+      description: Response object for query request for user notifications.
+      required:
+        - user_notifications
+      properties:
+        user_notifications:
+          description: List of user notifications.
+          type: array
+          items:
+            $ref: './user_notification.yaml#/components/schemas/UserNotification'
 
 paths:
   /status:
@@ -478,11 +489,12 @@ paths:
 
   /user_notifications:
     get:
+      operationId: QueryUserNotifications
       security:
         - Authority:
             - interuss.flight_planning.direct_automated_test
       parameters:
-        - name: from
+        - name: after
           description: >- 
             Parameter for filtering the user notifications sent at or after the specified time (inclusive). 
             The property 'notification_sent_at' in UserNotification is to be used for comparison.
@@ -492,10 +504,10 @@ paths:
           example: '2024-04-22T16:36:50.52Z'
           in: query
           required: true
-        - name: to
+        - name: before
           description: >-
-            Parameter for filtering the user notifications sent till the specified time (inclusive). 
-            This time should be after the time specified in 'to' parameter. 
+            Parameter for filtering the user notifications sent at or before the specified time (inclusive). 
+            This time must be after the time specified in 'after' parameter. 
             If not provided, then the value defaults to now. 
             The property 'notification_sent_at' in UserNotification is to be used for comparison.
           schema:
@@ -509,19 +521,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: './user_notification.yaml#/components/schemas/UserNotification'
-          description: Notifications sent to the user were retrieved successfully.
+                $ref: '#/components/schemas/QueryUserNotificationsResponse'
+          description: User notifications sent retrieved successfully.
         '400':
-          description: Query parameter 'from' missing in the request.
+          description: The request was missing 'after' query parameter, or the request was otherwise invalid.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
       summary: User notifications
       description: >-
-        Returns the list of user notifications, sent by USS, about conflicts in the time interval specified by the query parameters. 
+        Returns the list of user notifications sent by USS, in the time interval specified by the query parameters. 
         The list is in descending order by the property 'notification_sent_at' in ConflictNotification. 
         The implementation of this endpoint will require that the user notifications be available for querying for a flight_plan till the end of a test run.
         The user notifications should be available to be queried within 5 seconds of notifying the user.
