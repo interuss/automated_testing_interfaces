@@ -30,5 +30,6 @@ components:
           description: >-  
             Number of conflicting operational intents reported by the notification.                       
             If the notification is not related to a conflicting operational intent this value will be 0.
+            This field is not required when `conflict_status` has the value `DONT_KNOW`.
           type: integer
           minimum: 0
