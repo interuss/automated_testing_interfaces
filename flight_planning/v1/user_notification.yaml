@@ -25,7 +25,7 @@ components:
             - DONT_KNOW
             - NONE
             - SINGLE
-            - MULTIPE
+            - MULTIPLE
         conflicts_count:
           description: >-  
             Number of conflicting operational intents reported by the notification.                       
