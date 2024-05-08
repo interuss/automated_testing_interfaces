@@ -1,7 +1,7 @@
 # Flight planning automated testing interface
 
 ---
-Note: This interface will be DEPRECATED and REMOVED.  The replacement interface will be the [flight planning interface](../flight_planning).
+Note: This interface is DEPRECATED and REMOVED.  The replacement interface will be the [flight planning interface](../flight_planning).
 
 ---
 

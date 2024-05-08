@@ -1,9 +1,9 @@
 openapi: 3.0.2
 info:
   title: Remote ID Test Data Injection
-  version: 0.1.1
+  version: 0.1.2
   description: >-
-    This interface is implemented by every Service Provider wishing to be tested by the automated testing framework.
+    This interface is provided by every Service Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to inject flight-related test data into the Service Provider system under test.
 paths:
   /tests/{test_id}:
@@ -39,8 +39,8 @@ paths:
       summary: Create test
       description: >-
         Request the creation of one or more logical flights based on injection of the provided test data.
-        The host Service Provider's test data injector may modify fields, such as `details.id`, as necessary to work with their system.
-        The host Service Provider's test data injector should modify as few fields as practical, and change modified fields as little as practical.
+        The Service Provider's test data injector may modify fields, such as `details.id`, as necessary to work with their system.
+        The Service Provider's test data injector should modify as few fields as practical, and change modified fields as little as practical.
         The `injection_id` fields may not be modified.
       security:
         - TestAuth:
@@ -76,7 +76,7 @@ paths:
           description: Requested test was deleted successfully.
       operationId: deleteTest
       summary: Delete test
-      description: Remove all injected test data associated with this test from the host Service Provider's system under test.
+      description: Remove all test data associated with this test from the Service Provider's test data injector.
       security:
         - TestAuth:
             - rid.inject_test_data
@@ -546,7 +546,7 @@ components:
           items:
             $ref: '#/components/schemas/TestFlight'
     TestFlight:
-      description: 'The set of data to be injected into a Service Provider system under test for a single flight.'
+      description: "The set of data to be provided to a Service Provider's test data injector for a single flight."
       required:
         - injection_id
         - telemetry

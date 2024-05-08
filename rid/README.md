@@ -30,7 +30,7 @@ The general architecture assumed by these interfaces looks like this:
 
 In this diagram, the Service Provider system under test is encompassed by the
 dotted red line.  Each Service Provider USS wishing to use the automated testing
-system built with the interfaces in this folder would implement a **test data
+system built with the interfaces in this folder would provide a **test data
 injector** tailored to their individual system.  The automated test driver
 would create a test by providing a set of test data for each participating SP
 USS to inject into their system via the blue lines at the bottom of the diagram
@@ -42,10 +42,10 @@ be injected into their system in whichever manner was most appropriate
 follow as possible).
 
 Meanwhile, the automated test driver would poll a **display data test
-receiver** implemented by a Display Provider to observe the remote ID
+receiver** provided by a Display Provider to observe the remote ID
 information currently available in the whole remote ID system under test.  A
 Display Provider USS wishing to run the automated testing system built with the
-interfaces in this folder would implement a display data test receiver tailored
+interfaces in this folder would provide a display data test receiver tailored
 to their individual system.  This display data test receiver would collect all
 remote ID information available in a requested area, at the level of the Display
 Application, and provide that information to the automated test driver via the
