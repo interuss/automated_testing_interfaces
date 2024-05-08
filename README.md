@@ -1,6 +1,6 @@
 # InterUSS automated testing interfaces
 
-This repository houses the interfaces a USS/USSP must implement in order to be tested by certain scenarios in [the InterUSS automated testing tool uss_qualifier](https://github.com/interuss/dss/tree/master/monitoring/uss_qualifier).
+This repository houses the interfaces a USS/USSP must provide in order to be tested by certain scenarios in [the InterUSS automated testing tool uss_qualifier](https://github.com/interuss/dss/tree/master/monitoring/uss_qualifier).
 
 ## Interfaces
 
@@ -13,7 +13,7 @@ This repository houses the interfaces a USS/USSP must implement in order to be t
     * [v1 YAML](rid/v1/injection.yaml)
   * Observation (for NetRID Display Providers/Display Applications)
     * [v1 YAML](rid/v1/observation.yaml)
-* [SCD](scd/README.md) (will be deprecated; see [flight planning](flight_planning) instead)
+* [SCD](scd/README.md) (deprecated; see [flight planning](flight_planning) instead)
   * [v1 YAML](scd/v1/scd.yaml)
 * [Flight planning](flight_planning/README.md)
   * [v1 YAML](flight_planning/v1/flight_planning.yaml)

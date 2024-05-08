@@ -1,17 +1,17 @@
 openapi: 3.0.2
 info:
   title: Geospatial Map Provider Automated Testing Interface
-  version: 0.2.1
+  version: 0.2.2
   license:
     name: Apache License v2.0
     url: https://github.com/interuss/automated_testing_interfaces/blob/main/LICENSE.md
   description: >-
-    This interface is implemented by a USS to provide uss_qualifier (and perhaps other similar clients) with the
+    This interface is implemented to provide uss_qualifier (and perhaps other similar clients) with the
     capability to pretend to be a user interacting with the USS's geospatial map representation for the purpose of
     evaluating potential flight plans.
     
     This interface is used by InterUSS's geospatial feature comprehension tests, so every USS wishing to be tested by
-    those tests must implement this interface.
+    those tests must provide this interface.
     
     The automated testing suite may call this interface to first load test data into the USS system under test, and then
     will perform virtual queries on the USS's geospatial map to evaluate its processing and interpretation of the
@@ -29,10 +29,10 @@ components:
           tokenUrl: https://auth.example.com/oauth/token
           scopes:
             interuss.geospatial_map.direct_automated_test: |-
-              Client may determine the test-readiness of the USS and instruct the USS to load geospatial data from
+              Client may determine the test-readiness of the USS and instruct the USS admin to load geospatial data from
               specified data sources (acting as a test director).
             interuss.geospatial_map.query: |-
-              Client may read information from the USS's geospatial map (acting as a user of the USS's geospatial map).
+              Client may read information from the USS's geospatial map as visible to a user of the USS's geospatial map.
       description: |-
         Authorization from, or on behalf of, an authorization authority, augmenting standard Geo-Awareness authorization for the purpose of automated testing.
 
@@ -69,11 +69,11 @@ components:
       properties:
         status:
           description: >-
-            The status of the USS automated testing interface.
+            The status of this automated testing interface.
 
-            - `Starting`: the USS is starting and the automated test driver should wait before sending requests.
+            - `Starting`: the interface is starting and the automated test driver should wait before sending requests.
 
-            - `Ready`: the USS is ready to receive test requests.
+            - `Ready`: the interface is ready to receive test requests.
           type: string
           enum: [Starting, Ready]
           example: Ready
@@ -84,9 +84,9 @@ components:
           example: Geospatial Map Provider Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.2.0" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.2.2" when implementing this version of the API.
           type: string
-          example: v0.2.0
+          example: v0.2.2
 
     CreateGeospatialDataSourceRequest:
       type: object
@@ -334,15 +334,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
           description: >-
-            The USS's implementation of this automated testing interface is available and its status was retrieved successfully.
+            This automated testing interface is available and its status was retrieved successfully.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
         '404':
-          description: The USS automated testing interface is not available.
-      summary: Status of the USS automated testing interface
-      description: Get the status of the USS automated testing interface.
+          description: This automated testing interface is not available.
+      summary: Status of this automated testing interface
+      description: Get the status of this automated testing interface.
 
   /geospatial_data_sources:
     get:
@@ -363,7 +363,7 @@ paths:
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
       operationId: ListGeospatialDataSources
       summary: List geospatial data sources
-      description: Lists the geospatial data sources loaded by the USS at the request of the test director.
+      description: Lists the geospatial data sources loaded by the USS admin at the request of the test director.
 
   /geospatial_data_sources/{geospatial_data_source_id}:
     parameters:
@@ -399,7 +399,7 @@ paths:
           description: A request with this ID has already been made to load a different data source.
       operationId: PutGeospatialDataSource
       summary: Import and activate a geospatial data source
-      description: Instructs the USS to import and activate the geospatial data from the specified source.
+      description: Instructs the USS admin to import and activate the geospatial data from the specified source.
 
     get:
       security:
@@ -412,7 +412,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeospatialDataSourceResponse'
           description: >-
-            The geospatial data source is known by the USS and its status was retrieved successfully.
+            The geospatial data source is known by the USS admin and its status was retrieved successfully.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
@@ -434,7 +434,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeospatialDataSourceResponse'
           description: >-
-            Request has been correctly handled and the geospatial dataset may be deleted by the USS.
+            Request has been correctly handled and the geospatial dataset may be deleted by the USS admin.
             Status of the dataset may be checked using the GET method until it returns a 404.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
@@ -442,7 +442,7 @@ paths:
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
       operationId: DeleteGeospatialDataSource
       summary: Deactivate a geospatial data source
-      description: Instructs the USS to deactivate the geospatial data source and its data.
+      description: Instructs the USS admin to deactivate the geospatial data source and its data.
 
   /map/queries:
     post:
