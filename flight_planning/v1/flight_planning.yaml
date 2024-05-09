@@ -1,11 +1,11 @@
 openapi: 3.0.2
 info:
   title: Flight Planning Automated Testing Interface
-  version: 0.4.1
+  version: 0.4.2
   description: >-
-    This interface is implemented by a USS wishing to participate in automated tests involving attempts to plan flights.
+    This interface is provided by a USS wishing to participate in automated tests involving attempts to plan flights.
     
-    A client (usually uss_qualifier) pretends to be a user interacting with the USS's flight planning user interface
+    A client (usually uss_qualifier) instructs a virtual user interacting with the USS's flight planning user interface
     attempting to plan, update, and close flight plans.  The client provides the information a USS user may be expected
     to provide to the USS when using the USS, and the USS responds with only the information the USS provides to its
     normal users when they perform an equivalent flight planning action.  The USS should implement execution of these
@@ -13,7 +13,7 @@ info:
     
     A client may also (with a separate authorization scope) act as the test director to determine the status of the
     USS's system under test, and request that the test area be cleared of any dangling flight plans.  The USS may
-    implement these actions using non-standard code paths or those not available to normal users.
+    provide fulfillment of these actions using non-standard code paths or those not available to normal users.
     
     Note: Unless otherwise specified, fields specified in a message but not declared in the API or otherwise known to
     the server or client (as applicable) must be ignored.
@@ -27,11 +27,11 @@ components:
           tokenUrl: https://auth.example.com/oauth/token
           scopes:
             interuss.flight_planning.direct_automated_test: |-
-              Client may determine the test-readiness of the USS and instruct the USS to perform various actions to
-              prepare for tests involving flight planning (acting as test director).
+              Client may determine the test-readiness of the USS and instruct the USS or USS admin to perform various
+              actions to prepare for tests involving flight planning (acting as test director).
             interuss.flight_planning.plan: |-
-              Client may act as a user attempting to plan a flight, modify an existing flight plan, or close an existing
-              flight plan.
+              Client may issue instructions to a virtual user attempting to plan a flight, modify an existing flight
+              plan, or close an existing flight plan.
       description: |-
         Authorization from, or on behalf of, an authorization authority, augmenting standard strategic conflict detection or other similar authorization for the purpose of automated testing.
         
@@ -68,11 +68,11 @@ components:
       properties:
         status:
           description: >-
-            The status of the USS automated testing interface.
+            The status of this automated testing interface.
 
-            - `Starting`: the USS is starting and the automated test driver should wait before sending requests.
+            - `Starting`: the interface is starting and the automated test driver should wait before sending requests.
 
-            - `Ready`: the USS is ready to receive test requests.
+            - `Ready`: the interface is ready to receive test requests.
           type: string
           enum: [Starting, Ready]
           example: Ready
@@ -83,9 +83,9 @@ components:
           example: Flight Planning Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.4.0" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.4.2" when implementing this version of the API.
           type: string
-          example: v0.4.0
+          example: v0.4.2
 
     FlightPlan:
       description: >-
@@ -105,7 +105,7 @@ components:
         additional_information:
           description: >-
             Any information relevant to a particular jurisdiction or use case not described in the standard schema. The
-            keys and values must be agreed upon between the test designers and USSs under test.
+            keys and values must be agreed upon between the test designers and test participants.
           type: object
 
     BasicFlightPlanInformation:
@@ -258,7 +258,7 @@ components:
       properties:
         planning_result:
           description: >-
-            The result of the flight plan creation or update attempt.
+            The result of the flight plan creation or update attempt by the emulated user.
             If any option other than `Completed` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
           anyOf:
             - $ref: '#/components/schemas/PlanningActivityResult'
@@ -292,7 +292,7 @@ components:
       properties:
         planning_result:
           description: >-
-            The result of attempted flight plan cancellation/closure.
+            The result of attempted flight plan cancellation/closure by the USS admin.
             If any option other than `Completed` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
           anyOf:
             - $ref: '#/components/schemas/PlanningActivityResult'
@@ -328,7 +328,7 @@ components:
           type: string
         extent:
           description: >-
-            The USS should cancel and remove any flight plan it manages where
+            The USS admin should cancel and remove any flight plan it manages where
             any part of that flight plan intersects this area.
           anyOf:
             - $ref: './geotemporal.yaml#/components/schemas/Volume4D'
@@ -343,7 +343,7 @@ components:
           default: false
         message:
           description: >-
-            If the USS was unable to clear the entire area, this message can
+            If the USS admin was unable to clear the entire area, this message can
             provide information on the problem encountered.
           type: string
           example: >-
@@ -384,15 +384,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
           description: >-
-            The USS automated testing interface is available and its status was retrieved successfully.
+            This automated testing interface is available and its status was retrieved successfully.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
         '404':
-          description: The USS automated testing interface is not available.
-      summary: Status of the USS automated testing interface
-      description: Get the status of the USS automated testing interface.
+          description: This automated testing interface is not available.
+      summary: Status of this automated testing interface
+      description: Get the status of this automated testing interface.
       operationId: GetStatus
 
   /clear_area_requests:
@@ -422,7 +422,7 @@ paths:
       summary: Clear area
       operationId: ClearArea
       description: >-
-        This endpoint requests that the USS cancel and remove all flight plans in the specified area.
+        This endpoint requests that the USS admin cancel and remove all flight plans in the specified area.
 
   /flight_plans/{flight_plan_id}:
     parameters:
