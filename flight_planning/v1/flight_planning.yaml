@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Flight Planning Automated Testing Interface
-  version: 0.4.2
+  version: 0.5.0
   description: >-
     This interface is provided by a USS wishing to participate in automated tests involving attempts to plan flights.
     
@@ -31,7 +31,8 @@ components:
               actions to prepare for tests involving flight planning (acting as test director).
             interuss.flight_planning.plan: |-
               Client may issue instructions to a virtual user attempting to plan a flight, modify an existing flight
-              plan, or close an existing flight plan.
+              plan, or close an existing flight plan, and ask the virtual user for their observations while performing
+              these tasks.
       description: |-
         Authorization from, or on behalf of, an authorization authority, augmenting standard strategic conflict detection or other similar authorization for the purpose of automated testing.
         
@@ -83,9 +84,9 @@ components:
           example: Flight Planning Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.4.2" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.5.0" when implementing this version of the API.
           type: string
-          example: v0.4.2
+          example: v0.5.0
 
     FlightPlan:
       description: >-
@@ -359,14 +360,15 @@ components:
       properties:
         outcome:
           $ref: '#/components/schemas/ClearAreaOutcome'
+
     QueryUserNotificationsResponse:
       type: object
-      description: Response object for query request for user notifications.
+      description: Response object for query request for notifications observed by the virtual user.
       required:
         - user_notifications
       properties:
         user_notifications:
-          description: List of user notifications.
+          description: List of applicable observed user notifications.
           type: array
           items:
             $ref: './user_notification.yaml#/components/schemas/UserNotification'
@@ -492,12 +494,12 @@ paths:
       operationId: QueryUserNotifications
       security:
         - Authority:
-            - interuss.flight_planning.direct_automated_test
+            - interuss.flight_planning.plan
       parameters:
         - name: after
-          description: >- 
-            Parameter for filtering the user notifications sent at or after the specified time (inclusive). 
-            The property 'notification_sent_at' in UserNotification is to be used for comparison.
+          description: >-
+            Do not include any notifications observed before this time. 
+            The property 'observed_at' in UserNotification is to be used for comparison.
           schema:
             type: string
             format: date-time
@@ -506,10 +508,10 @@ paths:
           required: true
         - name: before
           description: >-
-            Parameter for filtering the user notifications sent at or before the specified time (inclusive). 
+            Do not include any notifications observed after this time. 
             This time must be after the time specified in 'after' parameter. 
             If not provided, then the value defaults to now. 
-            The property 'notification_sent_at' in UserNotification is to be used for comparison.
+            The property 'observed_at' in UserNotification is to be used for comparison.
           schema:
             type: string
             format: date-time
@@ -531,7 +533,6 @@ paths:
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
       summary: User notifications
       description: >-
-        Returns the list of user notifications sent by USS, in the time interval specified by the query parameters. 
-        The list is in descending order by the property 'notification_sent_at' in ConflictNotification. 
-        The implementation of this endpoint will require that the user notifications be available for querying for a flight_plan till the end of a test run.
-        The user notifications should be available to be queried within 5 seconds of notifying the user.
+        Returns the list of user notifications observed by the virtual user and applicable to the query parameters.  
+        The implementation of this endpoint requires that the user notifications be available for querying until the end of a test run.
+        The user notifications should be available to be queried within 5 seconds of observation by the virtual user.

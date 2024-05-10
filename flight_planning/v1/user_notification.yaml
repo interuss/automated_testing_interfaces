@@ -1,35 +1,28 @@
 info:
-  title: Definitions used in flight planning interface for user notification.
+  title: Definitions used in flight planning interface for user notifications.
 components:
   schemas:
     UserNotification:
       type: object
-      description: Notification sent to user.
+      description: Notification observed by virtual user.
       required:
-        - notification_sent_at
-        - conflict_status
+        - observed_at
       properties:
-        notification_sent_at:
+        observed_at:
           anyOf:
             - $ref: './geotemporal.yaml#/components/schemas/Time'
-          description: Time at which the user or user's automated system was sent a notification.
-        conflict_status:
+          description: Time at which the virtual user observed the notification.
+        conflicts:
           description: >-
-            Conflict status as notified by USS to the user.            
-             - `DONT_KNOW`: USS doesn't know or doesn't notify how may conflicts occurred.
-             - `NONE`: USS found no conflict.
-             - `SINGLE`: USS found one conflict.
-             - `MULTIPLE`: USS found multiple conflicts.
+            Conflict status as indicated in the notification.            
+             - `Unknown`: Notification doesn't contain information regarding conflicts.
+             - `None`: Notification indicates no conflicts.
+             - `Single`: Notification indicates the presence of one conflict.
+             - `Multiple`: Notification indicates the presence of multiple conflicts.
           type: string
           enum:
-            - DONT_KNOW
-            - NONE
-            - SINGLE
-            - MULTIPLE
-        conflicts_count:
-          description: >-  
-            Number of conflicting operational intents reported by the notification.                       
-            If the notification is not related to a conflicting operational intent this value will be 0.
-            This field is not required when `conflict_status` has the value `DONT_KNOW`.
-          type: integer
-          minimum: 0
+            - Unknown
+            - None
+            - Single
+            - Multiple
+          default: Unknown
