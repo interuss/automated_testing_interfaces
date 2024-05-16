@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Strategic Coordination Test Data Injection
-  version: 0.2.1
+  version: 0.2.2
   description: >-
     This interface is implemented by every USS wishing to enable the automated testing framework to interact with the
     USS as a user planning flights.  This interaction capability is required by some automated tests.

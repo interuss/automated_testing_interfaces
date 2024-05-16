@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Geospatial Map Provider Automated Testing Interface
-  version: 0.2.2
+  version: 0.2.3
   license:
     name: Apache License v2.0
     url: https://github.com/interuss/automated_testing_interfaces/blob/main/LICENSE.md

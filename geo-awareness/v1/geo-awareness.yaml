@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Geo-Awareness Automated Test Interfaces
-  version: 0.2.1
+  version: 0.2.2
   license:
     name: Apache License v2.0
     url: https://github.com/interuss/dss/blob/master/LICENSE

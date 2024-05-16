@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Flight Planning Automated Testing Interface
-  version: 0.4.2
+  version: 0.4.3
   description: >-
     This interface is provided by a USS wishing to participate in automated tests involving attempts to plan flights.
     
