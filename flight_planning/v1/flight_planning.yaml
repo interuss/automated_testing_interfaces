@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Flight Planning Automated Testing Interface
-  version: 0.4.3
+  version: 0.4.4
   description: >-
     This interface is provided by a USS wishing to participate in automated tests involving attempts to plan flights.
     
@@ -83,9 +83,9 @@ components:
           example: Flight Planning Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.4.2" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.4.4" when implementing this version of the API.
           type: string
-          example: v0.4.2
+          example: v0.4.4
 
     FlightPlan:
       description: >-
@@ -139,11 +139,11 @@ components:
               - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
                 `OffNominal` or `Contingent`.
             
-              - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
-                may expect to be able to recover to normal operation.
+              - `OffNominal`: The user or UAS reports or implies that it is temporarily not conforming to its intent,
+                but may expect to be able to recover to normal operation.
             
-              - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
-                to recover to normal operation.
+              - `Contingent`: The user or UAS reports or implies that it is not conforming to its intent and may be
+                unable to recover to normal operation.
             
               - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
                 planned in the future and the UAS that will be flying has not yet connected to the system).
