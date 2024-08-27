@@ -140,11 +140,11 @@ components:
               - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
                 `OffNominal` or `Contingent`.
             
-              - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
-                may expect to be able to recover to normal operation.
+              - `OffNominal`: The user or UAS reports or implies that it is temporarily not conforming to its intent,
+                but may expect to be able to recover to normal operation.
             
-              - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
-                to recover to normal operation.
+              - `Contingent`: The user or UAS reports or implies that it is not conforming to its intent and may be
+                unable to recover to normal operation.
             
               - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
                 planned in the future and the UAS that will be flying has not yet connected to the system).
