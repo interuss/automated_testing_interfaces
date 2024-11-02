@@ -193,29 +193,6 @@ components:
         - VA3m
         - VA1m
       type: string
-    SpeedAccuracy:
-      description: |-
-        This is the same enumeration scale and values from ADS-B NACv.
-
-        `SAUnknown`: Unknown speed accuracy
-
-        `SA10mpsPlus`: > 10 m/s
-
-        `SA10mps`: < 10 m/s
-
-        `SA3mps`: < 3 m/s
-
-        `SA1mps`: < 1 m/s
-
-        `SA03mps`: < 0.3 m/s
-      enum:
-        - SAUnknown
-        - SA10mpsPlus
-        - SA10mps
-        - SA3mps
-        - SA1mps
-        - SA03mps
-      type: string
     RIDAircraftPosition:
       description: Position of an aircraft as reported for remote ID purposes.
       required:
@@ -303,7 +280,7 @@ components:
             Union".  If no other classification field is specified, the Classification Type
             is "Undeclared".
           anyOf:
-            - $ref: '#/components/schemas/UAClassificationEU'
+            - $ref: 'commons.yaml#/components/schemas/UAClassificationEU'
     RIDRecentAircraftPosition:
       description: ""
       required:
@@ -361,7 +338,7 @@ components:
           $ref: 'commons.yaml#/components/schemas/RIDSpeed'
         speed_accuracy:
           anyOf:
-            - $ref: '#/components/schemas/SpeedAccuracy'
+            - $ref: 'commons.yaml#/components/schemas/SpeedAccuracy'
           description: Accuracy of horizontal ground speed.
         vertical_speed:
           format: float
@@ -436,29 +413,6 @@ components:
         - Other
         - HybridLift
       type: string
-    UAClassificationEU:
-      type: object
-      properties:
-        category:
-          type: string
-          enum:
-            - EUCategoryUndefined
-            - Open
-            - Specific
-            - Certified
-          default: EUCategoryUndefined
-        class:
-          type: string
-          enum:
-            - EUClassUndefined
-            - Class0
-            - Class1
-            - Class2
-            - Class3
-            - Class4
-            - Class5
-            - Class6
-          default: EUClassUndefined
     SpecificSessionID:
       description: |-
         A unique 20 byte ID intended to identify a specific flight (session) while providing a
@@ -557,6 +511,10 @@ components:
           description: 'ID of the injected test flight.  Remains the same regardless of the flight ID/UTM ID reported in the system.'
           type: string
           example: 'edb7695f-8737-4b9f-91f8-e2afbb333f41'
+        aircraft_type:
+          anyOf:
+            - $ref: 'commons.yaml#/components/schemas/UAType'
+          description: Generic type of aircraft
         telemetry:
           description: >-
             The set of telemetry data that should be injected into the system for this flight.

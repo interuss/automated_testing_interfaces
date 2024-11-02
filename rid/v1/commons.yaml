@@ -119,3 +119,157 @@ components:
       minimum: 0
       exclusiveMinimum: false
       type: number
+    HorizontalAccuracy:
+      description: |-
+        This is based on ADS-B NACp (plus the one extra increment).
+
+        `HAUnknown`: Unknown horizontal accuracy
+
+        `HA10NMPlus`: > 10NM (18.52km)
+
+        `HA10NM`: < 10NM (18.52km)
+
+        `HA4NM`: < 4NM (7.408km)
+
+        `HA2NM`: < 2NM (3.704km)
+
+        `HA1NM`: < 1NM (1852m)
+
+        `HA05NM`: < 0.5NM (926m)
+
+        `HA03NM`: < 0.3NM (555.6m)
+
+        `HA01NM`: < 0.1NM (185.2m)
+
+        `HA005NM`: < 0.05NM (92.6m)
+
+        `HA30m`: < 30m
+
+        `HA10m`: < 10m
+
+        `HA3m`: < 3m
+
+        `HA1m`: < 1m
+      enum:
+        - HAUnknown
+        - HA10NMPlus
+        - HA10NM
+        - HA4NM
+        - HA2NM
+        - HA1NM
+        - HA05NM
+        - HA03NM
+        - HA01NM
+        - HA005NM
+        - HA30m
+        - HA10m
+        - HA3m
+        - HA1m
+      type: string
+      default: HAUnknown
+    VerticalAccuracy:
+      description: |-
+        This is based on ADS-B Geodetic Vertical Accuracy (GVA) (plus the three extra increments)
+
+        `VAUnknown`: Unknown vertical accuracy
+
+        `VA150mPlus`: > 150m
+
+        `VA150m`: < 150m
+
+        `VA45m`: < 45m
+
+        `VA25m`: < 25m
+
+        `VA10m`: < 10m
+
+        `VA3m`: < 3m
+
+        `VA1m`: < 1m
+      enum:
+        - VAUnknown
+        - VA150mPlus
+        - VA150m
+        - VA45m
+        - VA25m
+        - VA10m
+        - VA3m
+        - VA1m
+      type: string
+      default: VAUnknown
+    SpeedAccuracy:
+      description: |-
+        This is the same enumeration scale and values from ADS-B NACv.
+
+        `SAUnknown`: Unknown speed accuracy
+
+        `SA10mpsPlus`: > 10 m/s
+
+        `SA10mps`: < 10 m/s
+
+        `SA3mps`: < 3 m/s
+
+        `SA1mps`: < 1 m/s
+
+        `SA03mps`: < 0.3 m/s
+      enum:
+        - SAUnknown
+        - SA10mpsPlus
+        - SA10mps
+        - SA3mps
+        - SA1mps
+        - SA03mps
+      type: string
+    UAType:
+      description: |-
+        The UA Type can help infer performance, speed, and duration of flights, for example, a
+        "fixed wing" can generally fly in a forward direction only (as compared to a multi-rotor).
+        This can also help differentiate aircraft types without sharing operationally sensitive
+        information like the make and model of a particular aircraft. Make and model are
+        anticipated to become available during the Registration ID lookup process. UAS Type is also
+        useful for correlating visual observation with data received. The types were formulated
+        based on unique flight characteristics.
+
+        `HybridLift` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
+      enum:
+        - NotDeclared
+        - Aeroplane
+        - Helicopter
+        - Gyroplane
+        - HybridLift
+        - Ornithopter
+        - Glider
+        - Kite
+        - FreeBalloon
+        - CaptiveBalloon
+        - Airship
+        - FreeFallOrParachute
+        - Rocket
+        - TetheredPoweredAircraft
+        - GroundObstacle
+        - Other
+      type: string
+      default: NotDeclared
+    UAClassificationEU:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - EUCategoryUndefined
+            - Open
+            - Specific
+            - Certified
+          default: EUCategoryUndefined
+        class:
+          type: string
+          enum:
+            - EUClassUndefined
+            - Class0
+            - Class1
+            - Class2
+            - Class3
+            - Class4
+            - Class5
+            - Class6
+          default: EUClassUndefined
