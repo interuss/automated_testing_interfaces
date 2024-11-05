@@ -263,6 +263,7 @@ components:
         - Rocket
         - TetheredPoweredAircraft
         - GroundObstacle
+        - VTOL
         - Other
       type: string
       default: NotDeclared

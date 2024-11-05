@@ -301,30 +301,6 @@ components:
             the "Operation Area End" data from the common data dictionary when group
             operation area is specified by point-radius.
           type: string
-    RIDAircraftType:
-      description: |-
-        Type of aircraft for the purposes of remote ID.
-
-        `VTOL` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
-      enum:
-        - NotDeclared
-        - Aeroplane
-        - Helicopter
-        - Gyroplane
-        - VTOL
-        - Ornithopter
-        - Glider
-        - Kite
-        - FreeBalloon
-        - CaptiveBalloon
-        - Airship
-        - FreeFallOrParachute
-        - Rocket
-        - TetheredPoweredAircraft
-        - GroundObstacle
-        - Other
-        - HybridLift
-      type: string
     SpecificSessionID:
       description: |-
         A unique 20 byte ID intended to identify a specific flight (session) while providing a
