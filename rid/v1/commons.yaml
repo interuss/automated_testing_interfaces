@@ -109,6 +109,11 @@ components:
       exclusiveMinimum: false
       type: number
       example: 1.9
+    VerticalSpeed:
+      format: float
+      description: Speed up (vertically) WGS84-HAE, m/s
+      type: number
+      example: 0.2
     RIDTrack:
       format: float
       description: Direction of flight expressed as a "True North-based" ground
@@ -220,6 +225,17 @@ components:
         - SA1mps
         - SA03mps
       type: string
+    TimestampAccuracy:
+      format: float
+      description: 'Declaration of timestamp accuracy, which is the largest difference
+        between Timestamp and true time of applicability for any of the following
+        fields: Latitude, Longitude, Geodetic Altitude, Pressure Altitude of Position,
+        Height. to determine time of applicability of the location data provided.  Expressed
+        in seconds, precise to 1/10ths of seconds. The accuracy reflects the 95%
+        uncertainty bound value for the timestamp.'
+      minimum: 0
+      exclusiveMinimum: false
+      type: number
     UAType:
       description: |-
         The UA Type can help infer performance, speed, and duration of flights, for example, a

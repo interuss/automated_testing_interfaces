@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Test Data Injection
-  version: 0.1.2
+  version: 0.2.0
   description: >-
     This interface is provided by every Service Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to inject flight-related test data into the Service Provider system under test.
@@ -318,16 +318,7 @@ components:
             3339 format, per OpenAPI specification.
           type: string
         timestamp_accuracy:
-          format: float
-          description: 'Declaration of timestamp accuracy, which is the largest difference
-            between Timestamp and true time of applicability for any of the following
-            fields: Latitude, Longitude, Geodetic Altitude, Pressure Altitude of Position,
-            Height. to determine time of applicability of the location data provided.  Expressed
-            in seconds, precise to 1/10ths of seconds. The accuracy reflects the 95%
-            uncertainty bound value for the timestamp.'
-          minimum: 0
-          exclusiveMinimum: false
-          type: number
+          $ref: 'commons.yaml#/components/schemas/TimestampAccuracy'
         operational_status:
           $ref: 'commons.yaml#/components/schemas/RIDOperationalStatus'
         position:
@@ -341,10 +332,7 @@ components:
             - $ref: 'commons.yaml#/components/schemas/SpeedAccuracy'
           description: Accuracy of horizontal ground speed.
         vertical_speed:
-          format: float
-          description: Speed up (vertically) WGS84-HAE, m/s.
-          type: number
-          example: 0.2
+          $ref: 'commons.yaml#/components/schemas/VerticalSpeed'
         height:
           $ref: 'commons.yaml#/components/schemas/RIDHeight'
         group_radius:
@@ -514,7 +502,7 @@ components:
         aircraft_type:
           anyOf:
             - $ref: 'commons.yaml#/components/schemas/UAType'
-          description: Generic type of aircraft
+          description: Aircraft type of the injected test flight.
         telemetry:
           description: >-
             The set of telemetry data that should be injected into the system for this flight.
