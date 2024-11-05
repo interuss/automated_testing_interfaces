@@ -117,82 +117,6 @@ components:
           description: Authentication data in form specified by `format`.
           type: string
           default: ''
-    HorizontalAccuracy:
-      description: |-
-        This is the NACp enumeration from ADS-B, plus 1m for a more complete range for UAs.
-
-        `HAUnknown`: Unknown horizontal accuracy
-
-        `HA10NMPlus`: > 10NM (18.52km)
-
-        `HA10NM`: < 10NM (18.52km)
-
-        `HA4NM`: < 4NM (7.408km)
-
-        `HA2NM`: < 2NM (3.704km)
-
-        `HA1NM`: < 1NM (1852m)
-
-        `HA05NM`: < 0.5NM (926m)
-
-        `HA03NM`: < 0.3NM (555.6m)
-
-        `HA01NM`: < 0.1NM (185.2m)
-
-        `HA005NM`: < 0.05NM (92.6m)
-
-        `HA30m`: < 30m
-
-        `HA10m`: < 10m
-
-        `HA3m`: < 3m
-
-        `HA1m`: < 1m
-      enum:
-        - HAUnknown
-        - HA10NMPlus
-        - HA10NM
-        - HA4NM
-        - HA2NM
-        - HA1NM
-        - HA05NM
-        - HA03NM
-        - HA01NM
-        - HA005NM
-        - HA30m
-        - HA10m
-        - HA3m
-        - HA1m
-      type: string
-    VerticalAccuracy:
-      description: |-
-        This is the GVA enumeration from ADS-B, plus some finer values for UAs.
-
-        `VAUnknown`: Unknown vertical accuracy
-
-        `VA150mPlus`: > 150m
-
-        `VA150m`: < 150m
-
-        `VA45m`: < 45m
-
-        `VA25m`: < 25m
-
-        `VA10m`: < 10m
-
-        `VA3m`: < 3m
-
-        `VA1m`: < 1m
-      enum:
-        - VAUnknown
-        - VA150mPlus
-        - VA150m
-        - VA45m
-        - VA25m
-        - VA10m
-        - VA3m
-        - VA1m
-      type: string
     RIDAircraftPosition:
       description: Position of an aircraft as reported for remote ID purposes.
       required:
@@ -211,13 +135,13 @@ components:
           $ref: 'commons.yaml#/components/schemas/RIDHeight'
         accuracy_h:
           anyOf:
-            - $ref: '#/components/schemas/HorizontalAccuracy'
+            - $ref: 'commons.yaml#/components/schemas/HorizontalAccuracy'
           description: Horizontal error that is likely to be present in this reported
             position.  Required when `extrapolated` field is true and always in the
             entry for the current state.
         accuracy_v:
           anyOf:
-            - $ref: '#/components/schemas/VerticalAccuracy'
+            - $ref: 'commons.yaml#/components/schemas/VerticalAccuracy'
           description: Vertical error that is likely to be present in this reported
             position.  Required when `extrapolated` field is true and always in the
             entry for the current state.
