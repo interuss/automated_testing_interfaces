@@ -117,105 +117,6 @@ components:
           description: Authentication data in form specified by `format`.
           type: string
           default: ''
-    HorizontalAccuracy:
-      description: |-
-        This is the NACp enumeration from ADS-B, plus 1m for a more complete range for UAs.
-
-        `HAUnknown`: Unknown horizontal accuracy
-
-        `HA10NMPlus`: > 10NM (18.52km)
-
-        `HA10NM`: < 10NM (18.52km)
-
-        `HA4NM`: < 4NM (7.408km)
-
-        `HA2NM`: < 2NM (3.704km)
-
-        `HA1NM`: < 1NM (1852m)
-
-        `HA05NM`: < 0.5NM (926m)
-
-        `HA03NM`: < 0.3NM (555.6m)
-
-        `HA01NM`: < 0.1NM (185.2m)
-
-        `HA005NM`: < 0.05NM (92.6m)
-
-        `HA30m`: < 30m
-
-        `HA10m`: < 10m
-
-        `HA3m`: < 3m
-
-        `HA1m`: < 1m
-      enum:
-        - HAUnknown
-        - HA10NMPlus
-        - HA10NM
-        - HA4NM
-        - HA2NM
-        - HA1NM
-        - HA05NM
-        - HA03NM
-        - HA01NM
-        - HA005NM
-        - HA30m
-        - HA10m
-        - HA3m
-        - HA1m
-      type: string
-    VerticalAccuracy:
-      description: |-
-        This is the GVA enumeration from ADS-B, plus some finer values for UAs.
-
-        `VAUnknown`: Unknown vertical accuracy
-
-        `VA150mPlus`: > 150m
-
-        `VA150m`: < 150m
-
-        `VA45m`: < 45m
-
-        `VA25m`: < 25m
-
-        `VA10m`: < 10m
-
-        `VA3m`: < 3m
-
-        `VA1m`: < 1m
-      enum:
-        - VAUnknown
-        - VA150mPlus
-        - VA150m
-        - VA45m
-        - VA25m
-        - VA10m
-        - VA3m
-        - VA1m
-      type: string
-    SpeedAccuracy:
-      description: |-
-        This is the same enumeration scale and values from ADS-B NACv.
-
-        `SAUnknown`: Unknown speed accuracy
-
-        `SA10mpsPlus`: > 10 m/s
-
-        `SA10mps`: < 10 m/s
-
-        `SA3mps`: < 3 m/s
-
-        `SA1mps`: < 1 m/s
-
-        `SA03mps`: < 0.3 m/s
-      enum:
-        - SAUnknown
-        - SA10mpsPlus
-        - SA10mps
-        - SA3mps
-        - SA1mps
-        - SA03mps
-      type: string
     RIDAircraftPosition:
       description: Position of an aircraft as reported for remote ID purposes.
       required:
@@ -234,13 +135,13 @@ components:
           $ref: 'commons.yaml#/components/schemas/RIDHeight'
         accuracy_h:
           anyOf:
-            - $ref: '#/components/schemas/HorizontalAccuracy'
+            - $ref: 'commons.yaml#/components/schemas/HorizontalAccuracy'
           description: Horizontal error that is likely to be present in this reported
             position.  Required when `extrapolated` field is true and always in the
             entry for the current state.
         accuracy_v:
           anyOf:
-            - $ref: '#/components/schemas/VerticalAccuracy'
+            - $ref: 'commons.yaml#/components/schemas/VerticalAccuracy'
           description: Vertical error that is likely to be present in this reported
             position.  Required when `extrapolated` field is true and always in the
             entry for the current state.
@@ -303,7 +204,7 @@ components:
             Union".  If no other classification field is specified, the Classification Type
             is "Undeclared".
           anyOf:
-            - $ref: '#/components/schemas/UAClassificationEU'
+            - $ref: 'commons.yaml#/components/schemas/UAClassificationEU'
     RIDRecentAircraftPosition:
       description: ""
       required:
@@ -341,16 +242,7 @@ components:
             3339 format, per OpenAPI specification.
           type: string
         timestamp_accuracy:
-          format: float
-          description: 'Declaration of timestamp accuracy, which is the largest difference
-            between Timestamp and true time of applicability for any of the following
-            fields: Latitude, Longitude, Geodetic Altitude, Pressure Altitude of Position,
-            Height. to determine time of applicability of the location data provided.  Expressed
-            in seconds, precise to 1/10ths of seconds. The accuracy reflects the 95%
-            uncertainty bound value for the timestamp.'
-          minimum: 0
-          exclusiveMinimum: false
-          type: number
+          $ref: 'commons.yaml#/components/schemas/TimestampAccuracy'
         operational_status:
           $ref: 'commons.yaml#/components/schemas/RIDOperationalStatus'
         position:
@@ -361,13 +253,10 @@ components:
           $ref: 'commons.yaml#/components/schemas/RIDSpeed'
         speed_accuracy:
           anyOf:
-            - $ref: '#/components/schemas/SpeedAccuracy'
+            - $ref: 'commons.yaml#/components/schemas/SpeedAccuracy'
           description: Accuracy of horizontal ground speed.
         vertical_speed:
-          format: float
-          description: Speed up (vertically) WGS84-HAE, m/s.
-          type: number
-          example: 0.2
+          $ref: 'commons.yaml#/components/schemas/VerticalSpeed'
         height:
           $ref: 'commons.yaml#/components/schemas/RIDHeight'
         group_radius:
@@ -412,53 +301,6 @@ components:
             the "Operation Area End" data from the common data dictionary when group
             operation area is specified by point-radius.
           type: string
-    RIDAircraftType:
-      description: |-
-        Type of aircraft for the purposes of remote ID.
-
-        `VTOL` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
-      enum:
-        - NotDeclared
-        - Aeroplane
-        - Helicopter
-        - Gyroplane
-        - VTOL
-        - Ornithopter
-        - Glider
-        - Kite
-        - FreeBalloon
-        - CaptiveBalloon
-        - Airship
-        - FreeFallOrParachute
-        - Rocket
-        - TetheredPoweredAircraft
-        - GroundObstacle
-        - Other
-        - HybridLift
-      type: string
-    UAClassificationEU:
-      type: object
-      properties:
-        category:
-          type: string
-          enum:
-            - EUCategoryUndefined
-            - Open
-            - Specific
-            - Certified
-          default: EUCategoryUndefined
-        class:
-          type: string
-          enum:
-            - EUClassUndefined
-            - Class0
-            - Class1
-            - Class2
-            - Class3
-            - Class4
-            - Class5
-            - Class6
-          default: EUClassUndefined
     SpecificSessionID:
       description: |-
         A unique 20 byte ID intended to identify a specific flight (session) while providing a
