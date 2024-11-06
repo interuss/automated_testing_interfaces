@@ -126,7 +126,7 @@ components:
       type: number
     HorizontalAccuracy:
       description: |-
-        This is the NACp enumeration from ADS-B, plus 1m for a more complete range for UAs.
+        This is based on ADS-B NACp (plus the one extra increment).
 
         `HAUnknown`: Unknown horizontal accuracy
 
@@ -171,9 +171,10 @@ components:
         - HA3m
         - HA1m
       type: string
+      default: HAUnknown
     VerticalAccuracy:
       description: |-
-        This is the GVA enumeration from ADS-B, plus some finer values for UAs.
+        This is based on ADS-B Geodetic Vertical Accuracy (GVA) (plus the three extra increments)
 
         `VAUnknown`: Unknown vertical accuracy
 
@@ -200,9 +201,10 @@ components:
         - VA3m
         - VA1m
       type: string
+      default: VAUnknown
     SpeedAccuracy:
       description: |-
-        This is the same enumeration scale and values from ADS-B NACv.
+        Provides quality/containment on horizontal ground speed.
 
         `SAUnknown`: Unknown speed accuracy
 
@@ -223,6 +225,7 @@ components:
         - SA1mps
         - SA03mps
       type: string
+      default: SAUnknown
     TimestampAccuracy:
       format: float
       description: 'Declaration of timestamp accuracy, which is the largest difference
@@ -234,17 +237,26 @@ components:
       minimum: 0
       exclusiveMinimum: false
       type: number
-    RIDAircraftType:
+    UAType:
       description: |-
-        Type of aircraft for the purposes of remote ID.
+        The UA Type can help infer performance, speed, and duration of flights, for example, a
+        "fixed wing" can generally fly in a forward direction only (as compared to a multi-rotor).
+        This can also help differentiate aircraft types without sharing operationally sensitive
+        information like the make and model of a particular aircraft. Make and model are
+        anticipated to become available during the Registration ID lookup process. UAS Type is also
+        useful for correlating visual observation with data received. The types were formulated
+        based on unique flight characteristics.
 
-        `VTOL` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
+        `HybridLift` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
+        
+        `VTOL` is equivalent to HybridLift, and kept for retro-compatibility with F3411-v19
       enum:
         - NotDeclared
         - Aeroplane
         - Helicopter
         - Gyroplane
         - VTOL
+        - HybridLift
         - Ornithopter
         - Glider
         - Kite
@@ -256,8 +268,8 @@ components:
         - TetheredPoweredAircraft
         - GroundObstacle
         - Other
-        - HybridLift
       type: string
+      default: NotDeclared
     UAClassificationEU:
       type: object
       properties:
