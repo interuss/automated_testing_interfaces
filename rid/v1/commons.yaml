@@ -126,7 +126,7 @@ components:
       type: number
     HorizontalAccuracy:
       description: |-
-        This is based on ADS-B NACp (plus the one extra increment).
+        This is the NACp enumeration from ADS-B, plus 1m for a more complete range for UAs.
 
         `HAUnknown`: Unknown horizontal accuracy
 
@@ -171,10 +171,9 @@ components:
         - HA3m
         - HA1m
       type: string
-      default: HAUnknown
     VerticalAccuracy:
       description: |-
-        This is based on ADS-B Geodetic Vertical Accuracy (GVA) (plus the three extra increments)
+        This is the GVA enumeration from ADS-B, plus some finer values for UAs.
 
         `VAUnknown`: Unknown vertical accuracy
 
@@ -201,7 +200,6 @@ components:
         - VA3m
         - VA1m
       type: string
-      default: VAUnknown
     SpeedAccuracy:
       description: |-
         This is the same enumeration scale and values from ADS-B NACv.
@@ -236,23 +234,17 @@ components:
       minimum: 0
       exclusiveMinimum: false
       type: number
-    UAType:
+    RIDAircraftType:
       description: |-
-        The UA Type can help infer performance, speed, and duration of flights, for example, a
-        "fixed wing" can generally fly in a forward direction only (as compared to a multi-rotor).
-        This can also help differentiate aircraft types without sharing operationally sensitive
-        information like the make and model of a particular aircraft. Make and model are
-        anticipated to become available during the Registration ID lookup process. UAS Type is also
-        useful for correlating visual observation with data received. The types were formulated
-        based on unique flight characteristics.
+        Type of aircraft for the purposes of remote ID.
 
-        `HybridLift` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
+        `VTOL` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
       enum:
         - NotDeclared
         - Aeroplane
         - Helicopter
         - Gyroplane
-        - HybridLift
+        - VTOL
         - Ornithopter
         - Glider
         - Kite
@@ -263,10 +255,9 @@ components:
         - Rocket
         - TetheredPoweredAircraft
         - GroundObstacle
-        - VTOL
         - Other
+        - HybridLift
       type: string
-      default: NotDeclared
     UAClassificationEU:
       type: object
       properties:
