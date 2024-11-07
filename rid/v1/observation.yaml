@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Display Data Observation
-  version: 0.1.2
+  version: 0.2.0
   description: >-
     This interface is provided by every Display Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to obtain current remote ID information from the perspective of a user of the Display Provider.
