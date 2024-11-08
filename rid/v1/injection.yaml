@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Test Data Injection
-  version: 0.2.0
+  version: 0.3.0
   description: >-
     This interface is provided by every Service Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to inject flight-related test data into the Service Provider system under test.
@@ -399,6 +399,10 @@ components:
           description: 'ID of the injected test flight.  Remains the same regardless of the flight ID/UTM ID reported in the system.'
           type: string
           example: 'edb7695f-8737-4b9f-91f8-e2afbb333f41'
+        aircraft_type:
+          anyOf:
+            - $ref: 'commons.yaml#/components/schemas/UAType'
+          description: Aircraft type of the injected test flight.
         telemetry:
           description: >-
             The set of telemetry data that should be injected into the system for this flight.
