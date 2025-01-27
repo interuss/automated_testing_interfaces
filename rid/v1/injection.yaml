@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Test Data Injection
-  version: 0.4.0
+  version: 0.4.1
   description: >-
     This interface is provided by every Service Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to inject flight-related test data into the Service Provider system under test.
@@ -80,6 +80,8 @@ paths:
       security:
         - TestAuth:
             - rid.inject_test_data
+  /user_notifications:
+    $ref: '../../flight_planning/v1/user_notification.yaml#/paths/~1user_notifications'
 components:
   schemas:
     RIDFlightID:
