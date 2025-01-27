@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Test Data Injection
-  version: 0.3.0
+  version: 0.4.0
   description: >-
     This interface is provided by every Service Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to inject flight-related test data into the Service Provider system under test.
@@ -118,11 +118,17 @@ components:
           type: string
           default: ''
     RIDAircraftPosition:
-      description: Position of an aircraft as reported for remote ID purposes.
-      required:
+      description: "
+      Position of an aircraft as reported for remote ID purposes.
+      
+      The following fields are required for a successful injection, but are not included in the 'required' field
+      to allow the uss_qualifier to check SP behavior in situations where a networked UAS would not provide the necessary data
+      to participate in Network Remote ID:
+      
         - lat
         - lng
         - alt
+      "
       type: object
       properties:
         lat:
@@ -220,8 +226,13 @@ components:
         position:
           $ref: '#/components/schemas/RIDAircraftPosition'
     RIDAircraftState:
-      description: State of an aircraft for the purposes of remote ID.
-      required:
+      description: "
+      State of an aircraft for the purposes of remote ID.
+      
+      The following fields are required for a successful injection, but are not included in the 'required' field
+      to allow the uss_qualifier to check SP behavior in situations where a networked UAS would not provide the necessary data
+      to participate in Network Remote ID:
+      
         - timestamp
         - timestamp_accuracy
         - accuracy_h
@@ -231,6 +242,7 @@ components:
         - track
         - speed_accuracy
         - position
+      "
       type: object
       properties:
         timestamp:
