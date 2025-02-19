@@ -1,0 +1,28 @@
+info:
+  title: Definitions used in flight planning interface for user notifications.
+components:
+  schemas:
+    UserNotification:
+      type: object
+      description: Notification observed by virtual user.
+      required:
+        - observed_at
+      properties:
+        observed_at:
+          anyOf:
+            - $ref: './geotemporal.yaml#/components/schemas/Time'
+          description: Time at which the virtual user observed the notification.
+        conflicts:
+          description: >-
+            Conflict status as indicated in the notification.            
+             - `Unknown`: Notification doesn't contain information regarding conflicts.
+             - `None`: Notification indicates no conflicts.
+             - `Single`: Notification indicates the presence of one conflict.
+             - `Multiple`: Notification indicates the presence of multiple conflicts.
+          type: string
+          enum:
+            - Unknown
+            - None
+            - Single
+            - Multiple
+          default: Unknown

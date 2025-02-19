@@ -3,9 +3,9 @@ info:
   title: Flight Planning Automated Testing Interface
   version: 0.5.0
   description: >-
-    This interface is implemented by a USS wishing to participate in automated tests involving attempts to plan flights.
+    This interface is provided by a USS wishing to participate in automated tests involving attempts to plan flights.
     
-    A client (usually uss_qualifier) pretends to be a user interacting with the USS's flight planning user interface
+    A client (usually uss_qualifier) instructs a virtual user interacting with the USS's flight planning user interface
     attempting to plan, update, and close flight plans.  The client provides the information a USS user may be expected
     to provide to the USS when using the USS, and the USS responds with only the information the USS provides to its
     normal users when they perform an equivalent flight planning action.  The USS should implement execution of these
@@ -13,7 +13,7 @@ info:
     
     A client may also (with a separate authorization scope) act as the test director to determine the status of the
     USS's system under test, and request that the test area be cleared of any dangling flight plans.  The USS may
-    implement these actions using non-standard code paths or those not available to normal users.
+    provide fulfillment of these actions using non-standard code paths or those not available to normal users.
     
     Note: Unless otherwise specified, fields specified in a message but not declared in the API or otherwise known to
     the server or client (as applicable) must be ignored.
@@ -27,13 +27,28 @@ components:
           tokenUrl: https://auth.example.com/oauth/token
           scopes:
             interuss.flight_planning.direct_automated_test: |-
-              Client may determine the test-readiness of the USS and instruct the USS to perform various actions to
-              prepare for tests involving flight planning (acting as test director).
+              Client may determine the test-readiness of the USS and instruct the USS or USS admin to perform various
+              actions to prepare for tests involving flight planning (acting as test director).
             interuss.flight_planning.plan: |-
-              Client may act as a user attempting to plan a flight, modify an existing flight plan, or close an existing
-              flight plan.
+              Client may issue instructions to a virtual user attempting to plan a flight, modify an existing flight
+              plan, or close an existing flight plan, and ask the virtual user for their observations while performing
+              these tasks.
       description: |-
         Authorization from, or on behalf of, an authorization authority, augmenting standard strategic conflict detection or other similar authorization for the purpose of automated testing.
+        
+        This authority will issue access tokens that are JSON Web Tokens as defined in RFC 7519, using the `RS256` algorithm for the signature, and publish to all providers the public key for verifying that signature.
+
+        The following fields must be included in the JWT claim for access tokens issued by this authority:
+
+        * `exp`, with a time no further than 1 hour in the future.
+
+        * `sub`, with unique ID of the client requesting the access token.
+
+        * `scope`, with a string composed of a space-separated list of strings indicating the scopes granted, per RFC 6749.
+
+        * `aud`, with the fully qualified domain name of the URL the access token will be used to access.  For example, if a USS were querying the endpoint at https://uss.example.com:8888/flight_planning/v1/flight_plans/db41f454-b255-470e-98d6-4c5096a295a1, the access token included in the request should specify `"aud": "uss.example.com"`.
+
+        Clients must provide these access tokens in an `Authorization` header in the form `Bearer <token>` in accordance with RFC 6750.
 
   schemas:
     FlightPlanID:
@@ -44,7 +59,7 @@ components:
       type: string
       format: uuid
       pattern: >-
-        ^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-4[0-9a-fA-F]{3}\\-[8-b][0-9a-fA-F]{3}\\-[0-9a-fA-F]{12}$
+        ^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-4[0-9a-fA-F]{3}\-[8-b][0-9a-fA-F]{3}\-[0-9a-fA-F]{12}$
       example: 03e5572a-f733-49af-bc14-8a18bd53ee39
 
     StatusResponse:
@@ -54,11 +69,11 @@ components:
       properties:
         status:
           description: >-
-            The status of the USS automated testing interface.
+            The status of this automated testing interface.
 
-            - `Starting`: the USS is starting and the automated test driver should wait before sending requests.
+            - `Starting`: the interface is starting and the automated test driver should wait before sending requests.
 
-            - `Ready`: the USS is ready to receive test requests.
+            - `Ready`: the interface is ready to receive test requests.
           type: string
           enum: [Starting, Ready]
           example: Ready
@@ -99,7 +114,7 @@ components:
         additional_information:
           description: >-
             Any information relevant to a particular jurisdiction or use case not described in the standard schema. The
-            keys and values must be agreed upon between the test designers and USSs under test.
+            keys and values must be agreed upon between the test designers and test participants.
           type: object
 
     BasicFlightPlanInformation:
@@ -238,7 +253,7 @@ components:
       properties:
         planning_result:
           description: >-
-            The result of the flight plan creation or update attempt.
+            The result of the flight plan creation or update attempt by the emulated user.
             If any option other than `Completed` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
           anyOf:
             - $ref: '#/components/schemas/PlanningActivityResult'
@@ -277,7 +292,7 @@ components:
       properties:
         planning_result:
           description: >-
-            The result of attempted flight plan cancellation/closure.
+            The result of attempted flight plan cancellation/closure by the USS admin.
             If any option other than `Completed` is specified, the `notes` field should be populated with the reason for the unsuccessful outcome.
           anyOf:
             - $ref: '#/components/schemas/PlanningActivityResult'
@@ -313,7 +328,7 @@ components:
           type: string
         extent:
           description: >-
-            The USS should cancel and remove any flight plan it manages where
+            The USS admin should cancel and remove any flight plan it manages where
             any part of that flight plan intersects this area.
           anyOf:
             - $ref: './geotemporal.yaml#/components/schemas/Volume4D'
@@ -328,7 +343,7 @@ components:
           default: false
         message:
           description: >-
-            If the USS was unable to clear the entire area, this message can
+            If the USS admin was unable to clear the entire area, this message can
             provide information on the problem encountered.
           type: string
           example: >-
@@ -345,6 +360,18 @@ components:
         outcome:
           $ref: '#/components/schemas/ClearAreaOutcome'
 
+    QueryUserNotificationsResponse:
+      type: object
+      description: Response object for query request for notifications observed by the virtual user.
+      required:
+        - user_notifications
+      properties:
+        user_notifications:
+          description: List of applicable observed user notifications.
+          type: array
+          items:
+            $ref: './user_notification.yaml#/components/schemas/UserNotification'
+
 paths:
   /status:
     get:
@@ -358,15 +385,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusResponse'
           description: >-
-            The USS automated testing interface is available and its status was retrieved successfully.
+            This automated testing interface is available and its status was retrieved successfully.
         '401':
           description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
         '403':
           description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
         '404':
-          description: The USS automated testing interface is not available.
-      summary: Status of the USS automated testing interface
-      description: Get the status of the USS automated testing interface.
+          description: This automated testing interface is not available.
+      summary: Status of this automated testing interface
+      description: Get the status of this automated testing interface.
       operationId: GetStatus
 
   /clear_area_requests:
@@ -396,7 +423,7 @@ paths:
       summary: Clear area
       operationId: ClearArea
       description: >-
-        This endpoint requests that the USS cancel and remove all flight plans in the specified area.
+        This endpoint requests that the USS admin cancel and remove all flight plans in the specified area.
 
   /flight_plans/{flight_plan_id}:
     parameters:
@@ -460,3 +487,51 @@ paths:
       operationId: DeleteFlightPlan
       description: >-
         This endpoint allows the test director to instruct the USS to remove a flight plan that is no longer needed for testing.
+
+  /user_notifications:
+    get:
+      operationId: QueryUserNotifications
+      security:
+        - Authority:
+            - interuss.flight_planning.plan
+      parameters:
+        - name: after
+          description: >-
+            Do not include any notifications observed before this time. 
+            The property 'observed_at' in UserNotification is to be used for comparison.
+          schema:
+            type: string
+            format: date-time
+          example: '2024-04-22T16:36:50.52Z'
+          in: query
+          required: true
+        - name: before
+          description: >-
+            Do not include any notifications observed after this time. 
+            This time must be after the time specified in 'after' parameter. 
+            If not provided, then the value defaults to now. 
+            The property 'observed_at' in UserNotification is to be used for comparison.
+          schema:
+            type: string
+            format: date-time
+          example: '2024-04-22T16:41:50.52Z'
+          in: query
+          required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryUserNotificationsResponse'
+          description: User notifications sent retrieved successfully.
+        '400':
+          description: The request was missing 'after' query parameter, or the request was otherwise invalid.
+        '401':
+          description: Bearer access token was not provided in Authorization header, token could not be decoded, or token was invalid.
+        '403':
+          description: The access token was decoded successfully but did not include a scope appropriate to this endpoint.
+      summary: User notifications
+      description: >-
+        Returns the list of user notifications observed by the virtual user and applicable to the query parameters.  
+        The implementation of this endpoint requires that the user notifications be available for querying until the end of a test run.
+        The user notifications should be available to be queried within 5 seconds of observation by the virtual user.
