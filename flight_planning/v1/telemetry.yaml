@@ -19,17 +19,16 @@ components:
       description: State of an aircraft for the purposes of simulating the execution of a flight plan.
       required:
         - id
+        - timestamp
       type: object
       properties:
         id:
           description: >-
-            Unique identifier for this aircraft state/telemetry.  If a USS has already queued an aircraft state with this ID as telemetry to be delivered, this state may be ignored.
+            Unique identifier for this aircraft state/telemetry.  The content of an AircraftState with a given ID must not change over time.  Therefore, if a USS has already queued an aircraft state with this ID as telemetry to be delivered, this state may be ignored.
           type: string
         timestamp:
           description: >-
             Time at which this state is valid.  This is equivalent to the time of sensor measurement, so the USS's primary system under test should not be aware of this state until after this time.
-            
-            If this field is omitted, the AircraftState with the specified `id` is to be considered unchanged from the previous definition.  If this field is omitted and there was no previous definition of an AircraftState with `id` associated with this flight, the request is invalid.
           anyOf:
             - $ref: 'geotemporal.yaml#/components/schemas/Time'
         timestamp_accuracy:
