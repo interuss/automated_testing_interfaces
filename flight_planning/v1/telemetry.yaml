@@ -48,6 +48,9 @@ components:
             State of the user's UAS associated with this flight plan as reported by the operator.  If the UAS reports
             its own state, that report will be reflected here.  If the operator reports the UAS state, that report will
             be reflected in the BasicFlightPlanInformation.
+            
+            If a system accepts UAS state reports from both the operator and UAS, it is possible the reported state may
+            differ between those two sources.
           anyOf:
             - $ref: './telemetry.yaml#/components/schemas/FunctionalState'
         track:
