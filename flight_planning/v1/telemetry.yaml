@@ -1,0 +1,253 @@
+info:
+  title: >-
+    Telemetry definitions used in flight planning interface.
+components:
+  schemas:
+    FlightTelemetry:
+      description: >-
+        When this information is present and the USS supports telemetry ingestion for a flight, the USS receiving this information should enqueue these telemetry reports to be delivered to the system, as if they were coming from the user, at (or soon after) the specified times.
+      type: object
+      properties:
+        states:
+          description: >-
+            The set of telemetry data that should be injected into the system (as if reported by the user or the user's system) at the appropriate times (and not before) for this flight.
+          type: array
+          items:
+            $ref: '#/components/schemas/AircraftState'
+          default: []
+    AircraftState:
+      description: State of an aircraft for the purposes of simulating the execution of a flight plan.
+      required:
+        - id
+        - timestamp
+      type: object
+      properties:
+        id:
+          description: >-
+            Unique identifier for this aircraft state/telemetry.  The content of an AircraftState with a given ID must not change over time.  Therefore, if a USS has already queued an aircraft state with this ID as telemetry to be delivered, this state may be ignored.
+          type: string
+        timestamp:
+          description: >-
+            Time at which this state is valid.  This is equivalent to the time of sensor measurement, so the USS's primary system under test should not be aware of this state until after this time.
+          anyOf:
+            - $ref: 'geotemporal.yaml#/components/schemas/Time'
+        timestamp_accuracy:
+          description: >-
+            Declaration of timestamp accuracy, which is the one-sided width of the 95%-confidence interval around `timestamp` for the true time of applicability for any of the data fields.
+          type: number
+          format: float
+          minimum: 0.0
+          example: 1.0
+          default: 0.0
+        position:
+          $ref: '#/components/schemas/AircraftPosition'
+        operational_status:
+          $ref: '#/components/schemas/OperationalStatus'
+        uas_state:
+          description: >-
+            State of the user's UAS associated with this flight plan as reported by the operator.  If the UAS reports
+            its own state, that report will be reflected here.  If the operator reports the UAS state, that report will
+            be reflected in the BasicFlightPlanInformation.
+            
+            If a system accepts UAS state reports from both the operator and UAS, it is possible the reported state may
+            differ between those two sources.
+          anyOf:
+            - $ref: './telemetry.yaml#/components/schemas/FunctionalState'
+        track:
+          description: Direction of flight expressed as a "True North-based" ground
+            track angle.  This value is provided in degrees East of North.  A value of
+            360 indicates that the true value is unavailable.
+          type: number
+          format: float
+          maximum: 360.0
+          minimum: 0.0
+          example: 295.0
+          default: 0.0
+        speed:
+          description: Ground speed of flight in meters per second.
+          type: number
+          format: float
+          minimum: 0.0
+          example: 1.9
+          default: 0.0
+        speed_accuracy:
+          description: Accuracy of horizontal ground speed.
+          anyOf:
+            - $ref: '#/components/schemas/SpeedAccuracy'
+        vertical_speed:
+          description: Geodetic vertical speed upward.  Units of meters per second.
+          type: number
+          format: float
+          example: -0.2
+          default: 0.0
+    OperationalStatus:
+      description: >-
+        Indicates operational status of associated aircraft.
+        
+        * `Undeclared`: The system does not support acquisition of knowledge about the status of the aircraft.
+        
+        * `Ground`: The aircraft is reporting status but is not airborne.
+        
+        * `Airborne`: The aircraft is, or should be considered as, being airborne.
+        
+        * `Emergency`: The aircraft is reporting an emergency.
+        
+        * `Unknown`: The system supports acquisition of knowledge about the status of the aircraft, but the status cannot currently be determined.
+      enum:
+        - Undeclared
+        - Ground
+        - Airborne
+        - Emergency
+        - Unknown
+      type: string
+      example: Airborne
+      default: Undeclared
+    AircraftPosition:
+      description: >-
+        Reported or actual position of an aircraft at a particular time.
+      type: object
+      properties:
+        location:
+          $ref: 'geotemporal.yaml#/components/schemas/LatLngPoint'
+        altitudes:
+          description: >-
+            The single vertical location of the aircraft, potentially reported relative to multiple datums.
+          type: array
+          items:
+            $ref: 'geotemporal.yaml#/components/schemas/Altitude'
+        accuracy_h:
+          anyOf:
+            - $ref: '#/components/schemas/HorizontalAccuracy'
+          description: Horizontal error that may be be present in this reported position.
+        accuracy_v:
+          anyOf:
+            - $ref: '#/components/schemas/VerticalAccuracy'
+          description: Vertical error that may be present in this reported position.
+        pressure_altitude:
+          description: The uncorrected altitude (based on reference standard 29.92
+            inHg, 1013.25 mb) provides a reference for algorithms that utilize "altitude
+            deltas" between aircraft.  This value is provided in meters.
+          type: number
+          format: float
+          example: 1500.0
+          default: 0.0
+    HorizontalAccuracy:
+      description: |-
+        This is the NACp enumeration from ADS-B, plus 1m for a more complete range for UAs.
+
+        `HAUnknown`: Unknown horizontal accuracy
+
+        `HA10NMPlus`: > 10NM (18.52km)
+
+        `HA10NM`: < 10NM (18.52km)
+
+        `HA4NM`: < 4NM (7.408km)
+
+        `HA2NM`: < 2NM (3.704km)
+
+        `HA1NM`: < 1NM (1852m)
+
+        `HA05NM`: < 0.5NM (926m)
+
+        `HA03NM`: < 0.3NM (555.6m)
+
+        `HA01NM`: < 0.1NM (185.2m)
+
+        `HA005NM`: < 0.05NM (92.6m)
+
+        `HA30m`: < 30m
+
+        `HA10m`: < 10m
+
+        `HA3m`: < 3m
+
+        `HA1m`: < 1m
+      enum:
+        - HAUnknown
+        - HA10NMPlus
+        - HA10NM
+        - HA4NM
+        - HA2NM
+        - HA1NM
+        - HA05NM
+        - HA03NM
+        - HA01NM
+        - HA005NM
+        - HA30m
+        - HA10m
+        - HA3m
+        - HA1m
+      type: string
+    VerticalAccuracy:
+      description: |-
+        This is the GVA enumeration from ADS-B, plus some finer values for UAs.
+
+        `VAUnknown`: Unknown vertical accuracy
+
+        `VA150mPlus`: > 150m
+
+        `VA150m`: < 150m
+
+        `VA45m`: < 45m
+
+        `VA25m`: < 25m
+
+        `VA10m`: < 10m
+
+        `VA3m`: < 3m
+
+        `VA1m`: < 1m
+      enum:
+        - VAUnknown
+        - VA150mPlus
+        - VA150m
+        - VA45m
+        - VA25m
+        - VA10m
+        - VA3m
+        - VA1m
+      type: string
+    SpeedAccuracy:
+      description: |-
+        This is the same enumeration scale and values from ADS-B NACv.
+
+        `SAUnknown`: Unknown speed accuracy
+
+        `SA10mpsPlus`: > 10 m/s
+
+        `SA10mps`: < 10 m/s
+
+        `SA3mps`: < 3 m/s
+
+        `SA1mps`: < 1 m/s
+
+        `SA03mps`: < 0.3 m/s
+      enum:
+        - SAUnknown
+        - SA10mpsPlus
+        - SA10mps
+        - SA3mps
+        - SA1mps
+        - SA03mps
+      type: string
+    FunctionalState:
+      description: |-
+        Functional state of the user's UAS associated with this flight plan.
+
+          - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
+            `OffNominal` or `Contingent`.
+
+          - `OffNominal`: The user or UAS reports or implies that it is temporarily not performing nominally, but
+            may expect to be able to recover to normal operation.
+
+          - `Contingent`: The user or UAS reports or implies that it is not performing nominally and may be unable
+            to recover to normal operation.
+
+          - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
+            planned in the future and the UAS that will be flying has not yet connected to the system).
+      type: string
+      enum:
+        - Nominal
+        - OffNominal
+        - Contingent
+        - NotSpecified

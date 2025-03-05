@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Flight Planning Automated Testing Interface
-  version: 0.5.0
+  version: 0.6.0
   description: >-
     This interface is provided by a USS wishing to participate in automated tests involving attempts to plan flights.
     
@@ -84,9 +84,9 @@ components:
           example: Flight Planning Automated Testing Interface
         api_version:
           description: |-
-            Indication of the API version implemented at this URL.  Must be "v0.5.0" when implementing this version of the API.
+            Indication of the API version implemented at this URL.  Must be "v0.6.0" when implementing this version of the API.
           type: string
-          example: v0.5.0
+          example: v0.6.0
 
     FlightPlan:
       description: >-
@@ -97,6 +97,14 @@ components:
       properties:
         basic_information:
           $ref: '#/components/schemas/BasicFlightPlanInformation'
+        telemetry:
+          description: |-
+            Telemetry for the flight (see FlightTelemetry definition).
+            
+            If/when the associated flight is canceled or closed, any telemetry not yet delivered to the system should be dequeued and discarded.
+            
+            When a FlightPlan is modified, queued telemetry should be overridden by the modification.  So, if a FlightPlan that previously contained telemetry has a modification that specifies no telemetry, all queued-but-not-sent AircraftStates should be dequeued and discarded.  If a FlightPlan modification does not contain the `id`s of one or more previously-specified AircraftStates for the associated flight, those AircraftStates should be dequeued and discarded.  If a FlightPlan modification contains additional `id`s not previously present, those AircraftStates should be enqueued for delivery.  A FlightPlan modification should never change the data of a queued AircraftState with a particular ID; if it does, this is an invalid request.  Any attempt to created, modify, or delete an already-sent AircraftState, or an AircraftState that should have already been sent, should be ignored.
+          $ref: './telemetry.yaml#/components/schemas/FlightTelemetry'
         astm_f3548_21:
           $ref: './astm_f3548v21.yaml#/components/schemas/ASTMF354821OpIntentInformation'
         uspace_flight_authorisation:
@@ -116,7 +124,6 @@ components:
       type: object
       required:
         - usage_state
-        - uas_state
       properties:
         usage_state:
           description: >-
@@ -135,25 +142,14 @@ components:
             - Closed
         uas_state:
           description: >-
-            State of the user's UAS associated with this flight plan.
+            State of the user's UAS associated with this flight plan as reported by the operator.  If the UAS reports
+            its own state, that report will be reflected in telemetry.  If the operator reports the UAS state, that
+            report will be reflected here.
             
-              - `Nominal`: The user or UAS reports or implies that it is performing nominally, or has not indicated
-                `OffNominal` or `Contingent`.
-            
-              - `OffNominal`: The user or UAS reports or implies that it is temporarily not conforming to its intent,
-                but may expect to be able to recover to normal operation.
-            
-              - `Contingent`: The user or UAS reports or implies that it is not conforming to its intent and may be
-                unable to recover to normal operation.
-            
-              - `NotSpecified`: The UAS status is not currently available or known (for instance, if the flight is
-                planned in the future and the UAS that will be flying has not yet connected to the system).
-          type: string
-          enum:
-            - Nominal
-            - OffNominal
-            - Contingent
-            - NotSpecified
+            If a system accepts UAS state reports from both the operator and UAS, it is possible the reported state may
+            differ between those two sources.
+          anyOf:
+            - $ref: './telemetry.yaml#/components/schemas/FunctionalState'
         area:
           description: >-
             The complete area in which the user intends to fly, or may fly, as known by the user.  The user intends to
@@ -278,6 +274,11 @@ components:
             The status of the user's flight plan following the flight planning activity.
           anyOf:
             - $ref: '#/components/schemas/FlightPlanStatus'
+        as_planned:
+          description: >-
+            The flight plan information, as it was actually planned in the system.  When the USS modifies any of the requested information (e.g., changing serial number, updating telemetry, or not injecting telemetry), this field should contain all those modifications.  If this field is not populated, the USS is indicating the requested flight information was injected with no modifications.
+          anyOf:
+            - $ref: '#/components/schemas/FlightPlan'
         includes_advisories:
           description: >-
             Nature of advisories included in the response to the user regarding their attempt to perform this flight
