@@ -1,0 +1,109 @@
+info:
+  title: Definitions used in flight planning interface specific to the UAS.
+components:
+  schemas:
+    UASInformation:
+      description: >-
+        Information about a UAS that may be provided in flight planning scenarios.
+      type: object
+      properties:
+        aircraft_type:
+          anyOf:
+            - $ref: '#/components/schemas/UAType'
+          description: Aircraft type of the injected test flight.
+        serial_number:
+          description: This is generally expressed in the CTA-2063-A Serial Number format.
+          type: string
+          example: INTCJ123-4567-890
+          default: ''
+        registration_numbers:
+          description: >-
+            For each relevant authority with which this UAS is registered, the number/identifier assigned
+            to this UAS.
+          type: array
+          items:
+            $ref: '#/components/schemas/UASRegistrationNumber'
+          default: []
+        eu_classification:
+          description: EU classification of aircraft.
+          anyOf:
+            - $ref: '#/components/schemas/UAClassificationEU'
+
+    UASRegistrationNumber:
+      description: >-
+        Number provided by CAA or authorized representative for registering and/or identifying UAS.
+      type: object
+      required:
+        - identifier
+      properties:
+        authority:
+          description: |-
+            Authority providing this registration number.  If authority represents a country, the ICAO nationality
+            mark is recommended.
+          type: string
+          example: N
+          default: ''
+        type:
+          description: |-
+            Type of license, registration, identifier, etc.
+          type: string
+          example: Registration
+          default: ''
+        identifier:
+          description: |-
+            Authority-assigned number or identifier.
+          type: string
+          example: N.123456
+
+    UAType:
+      description: |-
+        The UA Type can help infer performance, speed, and duration of flights, for example, a
+        "fixed wing" can generally fly in a forward direction only (as compared to a multi-rotor).
+
+        `HybridLift` is a fixed wing aircraft that can take off vertically.  `Helicopter` includes multirotor.
+        
+        `VTOL` is equivalent to HybridLift.
+      enum:
+        - NotDeclared
+        - Aeroplane
+        - Helicopter
+        - Gyroplane
+        - VTOL
+        - HybridLift
+        - Ornithopter
+        - Glider
+        - Kite
+        - FreeBalloon
+        - CaptiveBalloon
+        - Airship
+        - FreeFallOrParachute
+        - Rocket
+        - TetheredPoweredAircraft
+        - GroundObstacle
+        - Other
+      type: string
+      default: NotDeclared
+
+    UAClassificationEU:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - EUCategoryUndefined
+            - Open
+            - Specific
+            - Certified
+          default: EUCategoryUndefined
+        class:
+          type: string
+          enum:
+            - EUClassUndefined
+            - Class0
+            - Class1
+            - Class2
+            - Class3
+            - Class4
+            - Class5
+            - Class6
+          default: EUClassUndefined
