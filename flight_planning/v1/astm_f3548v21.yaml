@@ -9,8 +9,20 @@ components:
       properties:
         priority:
           $ref: '#/components/schemas/Priority'
+        requested_ovn_suffix:
+          $ref: '#/components/schemas/UUIDv7Format'
     Priority:
       description: >-
         Ordinal priority of the operational intent, as defined in ASTM F3548-21.
       type: integer
       default: 0
+    UUIDv7Format:
+      description: >-
+        The OVN requested suffix, as defined in the InterUSS ASTM F3548-21 extension.
+      maxLength: 36
+      minLength: 36
+      type: string
+      format: uuid
+      pattern: >-
+        ^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-7[0-9a-fA-F]{3}\-[89abAB][0-9a-fA-F]{3}\-[0-9a-fA-F]{12}$
+      example: 0191b794-9628-745a-a598-aa1fcd4a82bf
