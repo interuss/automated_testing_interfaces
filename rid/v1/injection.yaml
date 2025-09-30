@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Remote ID Test Data Injection
-  version: 0.5.0
+  version: 0.5.1
   description: >-
     This interface is provided by every Service Provider wishing to be tested by the automated testing framework.
     The automated testing suite calls this interface to inject flight-related test data into the Service Provider system under test.
@@ -237,13 +237,17 @@ components:
         auth_data:
           $ref: '#/components/schemas/RIDAuthData'
         serial_number:
-          description: Can be specified when no registration ID exists and required
+          description: This field is DEPRECATED and will be removed in a future version;
+            use uas_id.serial_number instead.
+            Can be specified when no registration ID exists and required
             by law in a region. This is expressed in the ANSI/CTA-2063-A Physical Serial
             Number format.
           type: string
           example: INTCJ123-4567-890
         registration_number:
-          description: If a CAA provides a method of registering UAS, this number
+          description: This field is DEPRECATED and will be removed in a future version;
+            use uas_id.registration_number instead.
+            If a CAA provides a method of registering UAS, this number
             is provided by the CAA or its authorized representative.  Required when
             required by law in a region.
           type: string
