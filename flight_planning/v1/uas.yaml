@@ -43,12 +43,6 @@ components:
           type: string
           example: N
           default: ''
-        type:
-          description: |-
-            Type of license, registration, identifier, etc.
-          type: string
-          example: Registration
-          default: ''
         identifier:
           description: |-
             Authority-assigned number or identifier.
