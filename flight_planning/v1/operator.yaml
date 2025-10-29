@@ -1,0 +1,49 @@
+info:
+  title: Definitions used in flight planning interface specific to the operator.
+components:
+  schemas:
+    OperatorInformation:
+      description: >-
+        Information about the operator that may be provided in flight planning scenarios.
+      type: object
+      properties:
+        registration_numbers:
+          description: Registration numbers for the remote pilot or operator.
+          type: array
+          items:
+            $ref: '#/components/schemas/OperatorRegistrationNumber'
+        location:
+          anyOf:
+            - $ref: './geotemporal.yaml#/components/schemas/LatLngPoint'
+          description: Location of operator.
+        altitude:
+          anyOf:
+            - $ref: './geotemporal.yaml#/components/schemas/Altitude'
+          description: Altitude of operator.
+
+    OperatorRegistrationNumber:
+      description: >-
+        Number provided by CAA or authorized representative for registering, licensing and/or identifying a remote
+        pilot or operator.
+      type: object
+      required:
+        - identifier
+      properties:
+        authority:
+          description: |-
+            Authority providing this registration number.  If authority represents a country, the ICAO nationality
+            mark is recommended.
+          type: string
+          example: N
+          default: ''
+        type:
+          description: |-
+            Type of license, registration, identifier, etc.
+          type: string
+          example: Part107License
+          default: ''
+        identifier:
+          description: |-
+            Authority-assigned number or identifier.
+          type: string
+          example: N.123456

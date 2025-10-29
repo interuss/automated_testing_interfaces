@@ -12,6 +12,9 @@ components:
           anyOf:
             - $ref: './geotemporal.yaml#/components/schemas/Time'
           description: Time at which the virtual user observed the notification.
+        message:
+          description: Message presented to the user, description of notification, or other means of helping identify the nature of the notification, for the purpose of increased readability of test reports.
+          type: string
         conflicts:
           description: >-
             Conflict status as indicated in the notification.            
