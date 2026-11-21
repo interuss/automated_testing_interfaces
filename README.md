@@ -1,6 +1,6 @@
 # InterUSS automated testing interfaces
 
-This repository houses the interfaces a USS/USSP must provide in order to be tested by certain scenarios in [the InterUSS automated testing tool uss_qualifier](https://github.com/interuss/dss/tree/master/monitoring/uss_qualifier).
+This repository houses the interfaces a USS/USSP must provide in order to be tested by certain scenarios in [the InterUSS automated testing tool uss_qualifier](https://github.com/interuss/monitoring/tree/main/monitoring/uss_qualifier).
 
 ## Interfaces
 
